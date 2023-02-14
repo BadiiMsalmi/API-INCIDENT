@@ -17,6 +17,7 @@ import jakarta.persistence.*;
 @Table(name ="incidents") 
 public class Incident {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,4 +27,19 @@ public class Incident {
 
     @Column(name= "libelle")
     private String libelle;
+
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User declarant;
+
+    @ManyToOne
+    @JoinColumn(name = "assigne_id")
+    private User assigne;
+
+    
 }
