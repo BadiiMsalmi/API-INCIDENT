@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Date;
+
 import jakarta.persistence.*;
 
 
@@ -27,6 +30,9 @@ public class Incident {
 
     @Column(name= "libelle")
     private String libelle;
+
+    @Column(name= "CreationDate")
+    private Date CreationDate;
 
 
     @ManyToOne
