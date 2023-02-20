@@ -15,16 +15,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
-@Table(name ="status") 
+@Table(name = "status")
 public class Status {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int status_id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int status_id;
 
-    @Column(name= "label")
-    private String label;
-    
+  @Column(name = "label")
+  private String label;
 }

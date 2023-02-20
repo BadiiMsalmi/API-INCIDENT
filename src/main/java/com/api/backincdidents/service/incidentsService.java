@@ -27,7 +27,7 @@ public class incidentsService {
     return repo.findAll();
   }
 
-  public Incident get(int id) {
-    return repo.findById(id).get();
+  public Incident addIncident(Incident incident) {
+    return repo.save(incident);
   }
 }

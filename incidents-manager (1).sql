@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 14, 2023 at 01:10 PM
+-- Generation Time: Feb 20, 2023 at 03:32 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -33,15 +33,20 @@ CREATE TABLE `incidents` (
   `reference` varchar(255) DEFAULT NULL,
   `assigne_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `status_id` int(11) DEFAULT NULL
+  `status_id` int(11) DEFAULT NULL,
+  `creation_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `incidents`
 --
 
-INSERT INTO `incidents` (`id`, `libelle`, `reference`, `assigne_id`, `user_id`, `status_id`) VALUES
-(1, 'incident', 'exemple', 1, 2, 1);
+INSERT INTO `incidents` (`id`, `libelle`, `reference`, `assigne_id`, `user_id`, `status_id`, `creation_date`) VALUES
+(1, 'incident', 'exemple', 1, 2, 1, '2023-02-09'),
+(2, 'incident2', 'exemple', 2, 1, 2, '2023-02-03'),
+(3, 'incident3', 'exemple3', 1, 2, 2, '2023-02-17'),
+(9, 'This is a new incident', 'INC001', 2, 1, 1, '2023-02-18'),
+(12, 'This is a new incident', 'INC009', 2, 1, 1, '2023-02-19');
 
 -- --------------------------------------------------------
 
@@ -82,7 +87,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`first_name`, `last_name`, `user_id`, `role`) VALUES
 ('badii', 'msalmi', 1, 'admin'),
-('oussema', 'ben achour', 2, 'user');
+('oussema', 'ben achour', 2, 'declarant');
 
 --
 -- Indexes for dumped tables
@@ -117,7 +122,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `incidents`
 --
 ALTER TABLE `incidents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `status`
