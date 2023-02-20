@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 
   public List<User> findByFirstNameStartingWith(String firstName);
+
+  public List<User> findByFirstNameLike(String firstName);
+
 }

@@ -14,4 +14,13 @@ public interface IncidentRepository extends JpaRepository<Incident, Integer> {
   // );
 
   public List<Incident> findAll();
+
+  
+ 
+ 
+
+ public List<Incident> findByAssigne_FirstNameLikeAndDeclarant_FirstNameLikeAndStatus_LabelAndCreationdate(  String assigne,String declarant,String status,Date date);
+
+
+
 }
