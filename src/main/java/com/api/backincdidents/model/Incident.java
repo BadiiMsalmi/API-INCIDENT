@@ -26,7 +26,7 @@ public class Incident {
   private String libelle;
 
   @Column(name = "CreationDate")
-  private Date CreationDate;
+  private Date creationdate;
 
   @ManyToOne
   @JoinColumn(name = "status_id")

@@ -1,10 +1,12 @@
 package com.api.backincdidents.controller;
 
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.service.userService;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,9 @@ public class userController {
 
   @Autowired
   private userService service;
+
+  @Autowired
+  private UserRepository repo;
 
   @GetMapping("/users")
   public List<User> getUsers() {
@@ -37,4 +42,13 @@ public class userController {
     List<User> user = service.getUserByHint(firstName);
     return user;
   }
+
+  @CrossOrigin("*")
+  @GetMapping("/xxx")
+  public List<User> xxx(@Param("firstName") String firstName){
+    List<User> user = repo.findByFirstNameLike('%'+firstName+'%');
+    return user;
+  }
+
+
 }
