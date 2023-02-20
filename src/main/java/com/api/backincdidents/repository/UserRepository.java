@@ -12,6 +12,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   @Query("SELECT u FROM User u WHERE role LIKE '%declarant%'")
   public List<User> getAllDeclarant();
 
-  
-  public List<User> getUsersByHint(String hint);
+
+  public List<User> findByFirstNameStartingWith(String firstName);
 }

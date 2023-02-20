@@ -24,7 +24,7 @@ public class userService {
     return userRepo.getAllDeclarant();
   }
 
-  public List<User> getUserByHint(String hint){
-    return userRepo.getUsersByHint(hint);
+  public List<User> getUserByHint(String firstName){
+    return userRepo.findByFirstNameStartingWith(firstName);
   }
 }

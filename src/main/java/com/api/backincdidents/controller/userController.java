@@ -33,8 +33,8 @@ public class userController {
   }
 
   @GetMapping("/userHint")
-  public List<User> getUserByHint(@Param("hint") String hint){
-    List<User> user = service.getUserByHint(hint);
+  public List<User> getUserByHint(@Param("firstName") String firstName){
+    List<User> user = service.getUserByHint(firstName);
     return user;
   }
 }
