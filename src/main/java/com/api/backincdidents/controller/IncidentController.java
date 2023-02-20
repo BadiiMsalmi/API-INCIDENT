@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +32,11 @@ public class IncidentController {
   public Incident addIncident(@RequestBody Incident incident) {
     Incident newIncident = service.addIncident(incident);
     return newIncident;
+  }
+
+  @GetMapping("/incidents")
+  public List<Incident> getAllIncidents(){
+    List<Incident> incidents = service.findAll();
+    return incidents;
   }
 }

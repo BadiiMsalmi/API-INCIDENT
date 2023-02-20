@@ -19,15 +19,19 @@ public class incidentsService {
     String status,
     Date date
   ) {
-    if (
-      assigne != null || declarant != null || status != null || date != null
-    ) {
-      return repo.findAll(assigne, declarant, status, date);
-    }
+    // if (
+    //   assigne != null || declarant != null || status != null || date != null
+    // ) {
+    //   return repo.findAll(assigne, declarant, status, date);
+    // }
     return repo.findAll();
   }
 
   public Incident addIncident(Incident incident) {
     return repo.save(incident);
+  }
+
+  public List<Incident> findAll(){
+    return repo.findAll();
   }
 }
