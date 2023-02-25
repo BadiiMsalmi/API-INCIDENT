@@ -1,5 +1,5 @@
 package com.api.backincdidents.repository;
-
+import java.sql.Date;
 import com.api.backincdidents.model.Incident;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

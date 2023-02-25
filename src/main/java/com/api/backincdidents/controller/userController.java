@@ -43,10 +43,22 @@ public class userController {
     return user;
   }
 
+
+  // FOR ADMIN
   @CrossOrigin("*")
-  @GetMapping("/xxx")
+  @GetMapping("/searchByAdmin")
   public List<User> xxx(@Param("firstName") String firstName){
-    List<User> user = repo.findByFirstNameLike('%'+firstName+'%');
+    List<User> user = repo.findByFirstNameLikeAndRoleLike('%'+firstName+'%',"admin");
+    return user;
+  }
+
+
+  // FOR USER 
+  @CrossOrigin("*")
+  @GetMapping("/searchByUser")
+  public List<User> xx(@Param("firstName") String firstName){
+    List<User> user = repo.findByFirstNameLikeAndRoleLike('%'+firstName+'%',"declarant");
+    System.out.println(firstName);
     return user;
   }
 
