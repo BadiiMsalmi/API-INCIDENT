@@ -16,15 +16,12 @@ public class userService {
     return userRepo.findAll();
   }
 
-  public List<User> getAllAdmins(){
-    return userRepo.getAllAdmins();
+  public List<User> getAllAdmins(String role){
+    return userRepo.findByRoleLike(role);
   }
 
-  public List<User> getAllDeclarant(){
-    return userRepo.getAllDeclarant();
+  public List<User> getAllDeclarant(String role){
+    return userRepo.findByRoleLike(role);
   }
 
-  public List<User> getUserByHint(String firstName){
-    return userRepo.findByFirstNameStartingWith(firstName);
-  }
 }

@@ -2,8 +2,8 @@ package com.api.backincdidents.service;
 
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.repository.IncidentRepository;
-import java.sql.Date;
 import java.util.List;
+import java.sql.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,25 +13,15 @@ public class incidentsService {
   @Autowired
   private IncidentRepository repo;
 
-  public List<Incident> listAll(
-    String assigne,
-    String declarant,
-    String status,
-    Date date
-  ) {
-    // if (
-    //   assigne != null || declarant != null || status != null || date != null
-    // ) {
-    //   return repo.findAll(assigne, declarant, status, date);
-    // }
-    return repo.findAll();
-  }
-
   public Incident addIncident(Incident incident) {
     return repo.save(incident);
   }
 
-  public List<Incident> findAll(){
+  public List<Incident> findAll() {
     return repo.findAll();
+  }
+
+  public List<Incident> searchIncidents(String assigne ,String  declarant,String status,Date date){
+    return repo.findByAssigne_FirstNameLikeAndDeclarant_FirstNameLikeAndStatus_LabelAndCreationdate('%' + assigne + '%','%' + declarant + '%',status,date);
   }
 }

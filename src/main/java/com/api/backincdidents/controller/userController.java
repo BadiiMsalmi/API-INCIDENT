@@ -27,36 +27,31 @@ public class userController {
 
   @GetMapping("/admins")
   public List<User> getAdmins( ) {
-    List<User> user = service.getAllAdmins();
+    String role = "admin";
+    List<User> user = service.getAllAdmins(role);
     return user;
   }
 
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
-    List<User> user = service.getAllDeclarant();
+    String role = "declarant";
+    List<User> user = service.getAllDeclarant(role);
     return user;
   }
 
-  @GetMapping("/userHint")
-  public List<User> getUserByHint(@Param("firstName") String firstName){
-    List<User> user = service.getUserByHint(firstName);
-    return user;
-  }
-
-
-  // FOR ADMIN
+  // Autocomplete FOR ADMIN
   @CrossOrigin("*")
   @GetMapping("/searchByAdmin")
-  public List<User> xxx(@Param("firstName") String firstName){
+  public List<User> searchByAdmin(@Param("firstName") String firstName){
     List<User> user = repo.findByFirstNameLikeAndRoleLike('%'+firstName+'%',"admin");
     return user;
   }
 
 
-  // FOR USER 
+  // Autocomplete FOR normal USER 
   @CrossOrigin("*")
   @GetMapping("/searchByUser")
-  public List<User> xx(@Param("firstName") String firstName){
+  public List<User> searchByUser(@Param("firstName") String firstName){
     List<User> user = repo.findByFirstNameLikeAndRoleLike('%'+firstName+'%',"declarant");
     System.out.println(firstName);
     return user;
