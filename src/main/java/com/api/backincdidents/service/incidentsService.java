@@ -21,6 +21,10 @@ public class incidentsService {
     return repo.findAll();
   }
 
+  public List<Incident> findById(int id) {
+    return repo.findById(id);
+  }
+
   public List<Incident> searchIncidents(String assigne ,String  declarant,String status,Date date){
     return repo.findByAssigne_FirstNameLikeAndDeclarant_FirstNameLikeAndStatus_LabelAndCreationdate('%' + assigne + '%','%' + declarant + '%',status,date);
   }
