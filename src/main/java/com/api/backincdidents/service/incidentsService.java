@@ -28,4 +28,8 @@ public class incidentsService {
   public List<Incident> searchIncidents(String assigne ,String  declarant,String status,Date date){
     return repo.findByAssigne_FirstNameLikeAndDeclarant_FirstNameLikeAndStatus_LabelAndCreationdate('%' + assigne + '%','%' + declarant + '%',status,date);
   }
+
+  public Incident updateIncident(Incident incident) {
+    return repo.save(incident);
+  }
 }

@@ -1,7 +1,6 @@
 package com.api.backincdidents.model;
 
 import jakarta.persistence.*;
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,7 @@ public class Incident {
   private String libelle;
 
   @Column(name = "CreationDate")
-  private Date creationdate;
+  private String creationdate;
 
   @ManyToOne
   @JoinColumn(name = "status_id")
