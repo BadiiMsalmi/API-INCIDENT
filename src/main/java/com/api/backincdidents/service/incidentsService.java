@@ -21,7 +21,7 @@ public class incidentsService {
     return repo.findAll();
   }
 
-  public List<Incident> findById(int id) {
+  public Incident getIncidentById(int id) {
     return repo.findById(id);
   }
 
@@ -32,4 +32,8 @@ public class incidentsService {
   public Incident updateIncident(Incident incident) {
     return repo.save(incident);
   }
+
+  
+
+
 }

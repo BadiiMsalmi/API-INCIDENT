@@ -6,7 +6,6 @@ import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.service.incidentsService;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -50,10 +49,10 @@ public class IncidentController {
   }
 
   @CrossOrigin("*")
-  @GetMapping("/incidents/{id}")
-  public List<Incident> getIncidentsById(@PathVariable int id) {
-    List<Incident> incidents = service.findById(id);
-    return incidents;
+  @GetMapping("/incident/{id}")
+  public Incident getIncidentsById(@PathVariable int id) {
+    Incident incident = service.getIncidentById(id);
+    return incident;
   }
 
   // @CrossOrigin("*")
@@ -87,15 +86,26 @@ public class IncidentController {
 
       if (field.equals("assigne")) {
         Join<Incident, User> assigneJoin = root.join("assigne");
-        predicates.add(criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0)));
+        predicates.add(
+          criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0))
+        );
       } else if (field.equals("declarant")) {
         Join<Incident, User> declarantJoin = root.join("declarant");
-        predicates.add(criteriaBuilder.equal(declarantJoin.get("firstName"), modalities.get(0)));
+        predicates.add(
+          criteriaBuilder.equal(
+            declarantJoin.get("firstName"),
+            modalities.get(0)
+          )
+        );
       } else if (field.equals("creationdate")) {
-        predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        predicates.add(
+          criteriaBuilder.equal(root.get("creationdate"), modalities.get(0))
+        );
       } else if (field.equals("status")) {
         Join<Incident, Status> statusJoin = root.join("status");
-        predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+        predicates.add(
+          criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0))
+        );
       }
     }
 
@@ -106,10 +116,34 @@ public class IncidentController {
   }
 
   @PutMapping("/incidents/{id}")
-  public ResponseEntity<Incident> updateIncident(@PathVariable("id") int id, @RequestBody Incident incident) {
-    incident.setId(id);
-    Incident updatedIncident = service.updateIncident(incident);
+  public ResponseEntity<Incident> updateIncident(
+    @PathVariable("id") int id,
+    @RequestBody Incident incident
+  ) {
+    Incident existingIncident = service.getIncidentById(id);
+    if (existingIncident == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    if (incident.getReference() != null) {
+      existingIncident.setReference(incident.getReference());
+    }
+    if (incident.getLibelle() != null) {
+      existingIncident.setLibelle(incident.getLibelle());
+    }
+    if (incident.getCreationdate() != null) {
+      existingIncident.setCreationdate(incident.getCreationdate());
+    }
+    if (incident.getStatus() != null) {
+      existingIncident.setStatus(incident.getStatus());
+    }
+    if (incident.getDeclarant() != null) {
+      existingIncident.setDeclarant(incident.getDeclarant());
+    }
+    if (incident.getAssigne() != null) {
+      existingIncident.setAssigne(incident.getAssigne());
+    }
+
+    Incident updatedIncident = service.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
   }
-
 }
