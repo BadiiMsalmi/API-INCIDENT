@@ -24,4 +24,12 @@ public class userService {
     return userRepo.findByRoleLike(role);
   }
 
+  public User getUserById(int id){
+    return userRepo.findById(id);
+  }
+
+
+  public User deleteUser(int id){
+    return userRepo.deleteById(id);
+  }
 }

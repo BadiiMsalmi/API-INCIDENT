@@ -115,6 +115,8 @@ public class IncidentController {
     return incidents;
   }
 
+
+  @CrossOrigin("*")
   @PutMapping("/incidents/{id}")
   public ResponseEntity<Incident> updateIncident(
     @PathVariable("id") int id,

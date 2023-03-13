@@ -27,7 +27,7 @@ public class Incident {
   @Column(name = "CreationDate")
   private String creationdate;
 
-  @ManyToOne
+  @ManyToOne 
   @JoinColumn(name = "status_id")
   private Status status;
 

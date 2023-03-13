@@ -10,4 +10,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
   public List<User> findByFirstNameLikeAndRoleLike(String firstName,String role);
 
+  public User findById(int user_id);
+
+  public User deleteById(int user_id);
+
 }
