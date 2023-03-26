@@ -50,7 +50,7 @@ public class UserController {
   @CrossOrigin("*")
   @GetMapping("/searchByAdmin")
   public List<User> searchByAdmin(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstNameLikeAndRoleLike('%' + firstName + '%', "admin");
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "admin");
     return user;
   }
 
@@ -58,7 +58,7 @@ public class UserController {
   @CrossOrigin("*")
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstNameLikeAndRoleLike('%' + firstName + '%', "declarant");
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "declarant");
     System.out.println(firstName);
     return user;
   }

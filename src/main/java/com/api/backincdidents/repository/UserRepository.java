@@ -10,12 +10,14 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   
   public List<User> findByRoleLike(String role);
 
-  public List<User> findByFirstNameLikeAndRoleLike(String firstName,String role);
+  public List<User> findByFirstnameLikeAndRoleLike(String firstname,String role);
 
   public User findById(int user_id);
 
   public User deleteById(int user_id);
 
   Optional<User> findByEmail(String email);
+
+  boolean existsByEmail(String email);
 
 }

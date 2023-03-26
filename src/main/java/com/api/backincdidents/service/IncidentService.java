@@ -26,7 +26,7 @@ public class IncidentService {
   }
 
   public List<Incident> searchIncidents(String assigne ,String  declarant,String status,Date date){
-    return repo.findByAssigne_FirstNameLikeAndDeclarant_FirstNameLikeAndStatus_LabelAndCreationdate('%' + assigne + '%','%' + declarant + '%',status,date);
+    return repo.findByAssigne_FirstnameLikeAndDeclarant_FirstnameLikeAndStatus_LabelAndCreationdate('%' + assigne + '%','%' + declarant + '%',status,date);
   }
 
   public Incident updateIncident(Incident incident) {

@@ -19,20 +19,21 @@ public class SecurityConfig {
     
 
     private final JwtAuthFilter jwtAuthFilter;
-    private AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http    
-            .csrf().disable()
+            .csrf()
+            .disable()
             .authorizeHttpRequests()
             .requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**"))
-            .permitAll()
+                .permitAll()
             .anyRequest()
-            .authenticated()
+                .authenticated()
             .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);

@@ -25,22 +25,17 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int user_id;
+  private int id;
 
-  @Column(name = "firstName")
-  private String firstName;
+  private String firstname;
 
-  @Column(name = "lastName")
-  private String lastName;
+  private String lastname;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "role")
   private Role role;
 
-  @Column(name="email")
   private String email;
 
-  @Column(name="password")
   private String password;
 
   @Override
