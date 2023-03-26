@@ -1,4 +1,4 @@
-package com.api.backincdidents.controller;
+package com.api.backincdidents.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class AuthenticationRequest {
 
-    private String firstname;
-    private String lastname;
     private String email;
-    private String password; 
+    String password;
 }

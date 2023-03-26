@@ -1,4 +1,4 @@
-package com.api.backincdidents.controller;
+package com.api.backincdidents.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,10 +4,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.api.backincdidents.controller.AuthenticationRequest;
-import com.api.backincdidents.controller.AuthenticationResponse;
-import com.api.backincdidents.controller.RegisterRequest;
+
 import com.api.backincdidents.enumm.Role;
+import com.api.backincdidents.model.AuthenticationRequest;
+import com.api.backincdidents.model.AuthenticationResponse;
+import com.api.backincdidents.model.RegisterRequest;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.UserRepository;
 
