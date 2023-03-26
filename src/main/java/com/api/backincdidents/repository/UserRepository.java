@@ -2,6 +2,8 @@ package com.api.backincdidents.repository;
 
 import com.api.backincdidents.model.User;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -13,5 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   public User findById(int user_id);
 
   public User deleteById(int user_id);
+
+  Optional<User> findByEmail(String email);
 
 }

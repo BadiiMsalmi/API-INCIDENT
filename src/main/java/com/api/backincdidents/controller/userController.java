@@ -2,9 +2,9 @@ package com.api.backincdidents.controller;
 
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.UserRepository;
-import com.api.backincdidents.service.userService;
+import com.api.backincdidents.service.UserService;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import org.springframework.data.repository.query.Param;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-public class userController {
+public class UserController {
 
   @Autowired
-  private userService service;
+  private UserService service;
 
   @Autowired
   private UserRepository repo;

@@ -5,17 +5,18 @@ import com.api.backincdidents.Dto.WhereDto;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
-import com.api.backincdidents.service.incidentsService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import com.api.backincdidents.service.IncidentService;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class IncidentController {
 
   @Autowired
-  private incidentsService service;
+  private IncidentService service;
+
+  
 
   // Hedha el api bch tzid incident jdid
   @CrossOrigin("*")
@@ -55,18 +58,6 @@ public class IncidentController {
     return incident;
   }
 
-  // @CrossOrigin("*")
-  // @PostMapping("/search") // CHECK IT
-  // public List<Incident> Incidents(
-  // @RequestParam("assignerInput") String assigne,
-  // @RequestParam("declarantInput") String declarant,
-  // @RequestParam("statusSelect") String status,
-  // @RequestParam("dateInput") Date date) {
-  // List<Incident> listIncident = service.searchIncidents(assigne, declarant,
-  // status, date);
-  // System.out.println(status);
-  // return listIncident;
-  // }
 
   @PersistenceContext
   private EntityManager em;
