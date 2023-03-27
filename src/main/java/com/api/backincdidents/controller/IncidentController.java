@@ -72,7 +72,7 @@ public class IncidentController {
 
     for (WhereDto where : filter.getWhere()) {
       String field = where.getField();
-      String operator = where.getOperator();
+      // String operator = where.getOperator();
       List<String> modalities = where.getModalities();
 
       if (field.equals("assigne")) {

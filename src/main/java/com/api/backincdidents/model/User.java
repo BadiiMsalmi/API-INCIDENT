@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,15 +29,23 @@ public class User implements UserDetails{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  @NotNull
+  @NotEmpty
   private String firstname;
 
+  @NotNull
+  @NotEmpty
   private String lastname;
 
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  @NotNull
+  @NotEmpty
   private String email;
 
+  @NotNull
+  @NotEmpty
   private String password;
 
   @OneToMany(mappedBy = "user")
