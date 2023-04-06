@@ -3,6 +3,8 @@ package com.api.backincdidents.service;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,9 @@ public class UserService {
     return userRepo.findById(id);
   }
 
+  public Optional<User> getUserByemail(String email){
+    return userRepo.findByEmail(email);
+  }
 
   public User deleteUser(int id){
     return userRepo.deleteById(id);

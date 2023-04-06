@@ -6,6 +6,7 @@ import com.api.backincdidents.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.security.Principal;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -25,20 +26,20 @@ public class UserController {
 
   @Autowired
   private UserRepository repo;
-
+  @CrossOrigin("*")
   @GetMapping("/users")
   public List<User> getUsers() {
     List<User> user = service.getAllUsers();
     return user;
   }
-
+  @CrossOrigin("*")
   @GetMapping("/admins")
   public List<User> getAdmins() {
     String role = "admin";
     List<User> user = service.getAllAdmins(role);
     return user;
   }
-
+  @CrossOrigin("*")
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
     String role = "declarant";
@@ -69,6 +70,7 @@ public class UserController {
     User user = service.getUserById(id);
     return user;
   }
+
 
   @CrossOrigin("*")
   @DeleteMapping("/user/{id}")

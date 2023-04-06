@@ -1,8 +1,11 @@
 package com.api.backincdidents.service;
 
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ import com.api.backincdidents.repository.TokenRepository;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.validators.ObjectsValidator;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -108,5 +113,8 @@ public class AuthService {
                                 .build();
                 tokenRepository.save(token);
         }
+
+        
+            
 
 }
