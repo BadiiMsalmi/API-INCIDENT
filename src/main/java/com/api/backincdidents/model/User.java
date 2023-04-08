@@ -51,6 +51,8 @@ public class User implements UserDetails{
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 
+  private boolean isEnabled;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority(role.name()));  
@@ -78,11 +80,12 @@ public class User implements UserDetails{
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return isEnabled;
   }
 
   @Override
   public String getPassword() {
     return password;
   }
+  
 }

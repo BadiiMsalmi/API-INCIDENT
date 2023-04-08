@@ -1,11 +1,9 @@
 package com.api.backincdidents.service;
 
-import java.util.List;
-
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +11,22 @@ import com.api.backincdidents.enumm.Role;
 import com.api.backincdidents.enumm.TokenType;
 import com.api.backincdidents.model.AuthenticationRequest;
 import com.api.backincdidents.model.AuthenticationResponse;
+import com.api.backincdidents.model.ConfirmationToken;
 import com.api.backincdidents.model.RegisterRequest;
 import com.api.backincdidents.model.Token;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.ConfirmationTokenRepository;
 import com.api.backincdidents.repository.TokenRepository;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.validators.ObjectsValidator;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
+        private final ConfirmationTokenRepository confirmationTokenRepository;
         private final UserRepository repository;
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;
@@ -36,6 +35,7 @@ public class AuthService {
         private final TokenRepository tokenRepository;
         private final ObjectsValidator<RegisterRequest> registerRequestValidator;
         private final ObjectsValidator<AuthenticationRequest> authenticationRequestValidator;
+        private final EmailService emailService;
 
         public AuthenticationResponse register(RegisterRequest request) {
                 var violations = registerRequestValidator.validate(request);
@@ -57,6 +57,15 @@ public class AuthService {
                                 .role(Role.USER)
                                 .build();
                 var savedUser = repository.save(user);
+                ConfirmationToken confirmationToken = new ConfirmationToken(user);
+                confirmationTokenRepository.save(confirmationToken);
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(user.getEmail());
+                mailMessage.setSubject("Complete Registration!");
+                mailMessage.setFrom("admibot69@outlook.fr");
+                mailMessage.setText("To confirm your account, please click here : http://localhost:8080/api/v1/auth/confirm-account?token="+confirmationToken.getConfirmationToken());
+                emailService.sendEmail(mailMessage);
+                System.out.println(mailMessage);
                 var jwtToken = jwtService.generateToken(user);
                 saveUserToken(savedUser, jwtToken);
                 return AuthenticationResponse.builder()
@@ -88,13 +97,19 @@ public class AuthService {
                                         new UsernamePasswordAuthenticationToken(
                                                         request.getEmail(),
                                                         request.getPassword()));
+                                                        
                 } catch (AuthenticationException ex) {
+                        var user = repository.findByEmail(request.getEmail())
+                                                        .orElseThrow();
+                                                
+                if(!user.isEnabled()){
                         return AuthenticationResponse.builder()
-                                        .error("Invalid email or password")
-                                        .build();
+                        .error("Account not activated, check email.")
+                        .build();   
+                }
                 }
                 var user = repository.findByEmail(request.getEmail())
-                                .orElseThrow();
+                                                        .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
                 revokeAllUserToken(user);
                 saveUserToken(user, jwtToken);

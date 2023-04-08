@@ -6,7 +6,6 @@ import com.api.backincdidents.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
 
-import java.security.Principal;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
