@@ -87,5 +87,9 @@ public class User implements UserDetails{
   public String getPassword() {
     return password;
   }
+
+  public Object orElseThrow(Object object) {
+    return null;
+  }
   
 }

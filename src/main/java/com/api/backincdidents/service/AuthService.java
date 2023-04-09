@@ -63,9 +63,9 @@ public class AuthService {
                 mailMessage.setTo(user.getEmail());
                 mailMessage.setSubject("Complete Registration!");
                 mailMessage.setFrom("admibot69@outlook.fr");
-                mailMessage.setText("To confirm your account, please click here : http://localhost:8080/api/v1/auth/confirm-account?token="+confirmationToken.getConfirmationToken());
+                mailMessage.setText("Hello,"+user.getFirstname());
+                mailMessage.setText("Hello,"+user.getFirstname()+"\nTo confirm your account, please click here : http://localhost:8080/api/v1/auth/confirm-account?token="+confirmationToken.getConfirmationToken());
                 emailService.sendEmail(mailMessage);
-                System.out.println(mailMessage);
                 var jwtToken = jwtService.generateToken(user);
                 saveUserToken(savedUser, jwtToken);
                 return AuthenticationResponse.builder()
@@ -101,11 +101,16 @@ public class AuthService {
                 } catch (AuthenticationException ex) {
                         var user = repository.findByEmail(request.getEmail())
                                                         .orElseThrow();
-                                                
+                                    
                 if(!user.isEnabled()){
                         return AuthenticationResponse.builder()
                         .error("Account not activated, check email.")
                         .build();   
+                }
+                if(!request.getPassword().equals(user.getPassword())){
+                        return AuthenticationResponse.builder()
+                        .error("Invalid email or password, Please check again.")
+                        .build();
                 }
                 }
                 var user = repository.findByEmail(request.getEmail())
