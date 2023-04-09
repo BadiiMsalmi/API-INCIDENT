@@ -25,12 +25,14 @@ public class UserController {
 
   @Autowired
   private UserRepository repo;
+
   @CrossOrigin("*")
   @GetMapping("/users")
   public List<User> getUsers() {
     List<User> user = service.getAllUsers();
     return user;
   }
+
   @CrossOrigin("*")
   @GetMapping("/admins")
   public List<User> getAdmins() {
@@ -38,6 +40,7 @@ public class UserController {
     List<User> user = service.getAllAdmins(role);
     return user;
   }
+
   @CrossOrigin("*")
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
@@ -69,7 +72,6 @@ public class UserController {
     User user = service.getUserById(id);
     return user;
   }
-
 
   @CrossOrigin("*")
   @DeleteMapping("/user/{id}")

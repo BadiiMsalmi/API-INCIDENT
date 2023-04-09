@@ -1,17 +1,14 @@
 package com.api.backincdidents.Dto;
+
 import java.util.List;
 
 public class FilterDto {
 
-   
-
     private List<WhereDto> where;
 
-    private Integer skip ;
+    private Integer skip;
 
     private Integer limit;
-
- 
 
     public Integer getSkip() {
 
@@ -19,15 +16,11 @@ public class FilterDto {
 
     }
 
- 
-
     public void setSkip(Integer skip) {
 
         this.skip = skip;
 
     }
-
- 
 
     public Integer getLimit() {
 
@@ -35,15 +28,11 @@ public class FilterDto {
 
     }
 
- 
-
     public void setLimit(Integer limit) {
 
         this.limit = limit;
 
     }
-
- 
 
     public List<WhereDto> getWhere() {
 
@@ -51,16 +40,10 @@ public class FilterDto {
 
     }
 
- 
-
     public void setWhere(List<WhereDto> where) {
 
         this.where = where;
 
     }
-
- 
-
- 
 
 }

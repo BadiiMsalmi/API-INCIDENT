@@ -13,9 +13,11 @@ import com.api.backincdidents.model.AuthenticationRequest;
 import com.api.backincdidents.model.AuthenticationResponse;
 import com.api.backincdidents.model.ConfirmationToken;
 import com.api.backincdidents.model.RegisterRequest;
+import com.api.backincdidents.model.RestorePasswordToken;
 import com.api.backincdidents.model.Token;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.ConfirmationTokenRepository;
+import com.api.backincdidents.repository.RestorePasswordRepository;
 import com.api.backincdidents.repository.TokenRepository;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.validators.ObjectsValidator;
@@ -36,6 +38,7 @@ public class AuthService {
         private final ObjectsValidator<RegisterRequest> registerRequestValidator;
         private final ObjectsValidator<AuthenticationRequest> authenticationRequestValidator;
         private final EmailService emailService;
+        private final RestorePasswordRepository restorePasswordRepository;
 
         public AuthenticationResponse register(RegisterRequest request) {
                 var violations = registerRequestValidator.validate(request);
@@ -135,6 +138,20 @@ public class AuthService {
         }
 
         
+    public ConfirmationToken getConfirmationToken(String confirmationToken) {
+        return confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+    }
             
+    public RestorePasswordToken generateToken(User user) {
+        RestorePasswordToken token = new RestorePasswordToken(user);
+        return restorePasswordRepository.save(token);
+    }
 
+    public RestorePasswordToken getRestorePasswordToken(String token) {
+        return restorePasswordRepository.findByToken(token);
+    }
+
+    public void deleteRestorePasswordToken(RestorePasswordToken token) {
+        restorePasswordRepository.delete(token);
+    }
 }

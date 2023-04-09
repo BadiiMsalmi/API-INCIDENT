@@ -34,8 +34,6 @@ public class IncidentController {
   @Autowired
   private IncidentService service;
 
-  
-
   // Hedha el api bch tzid incident jdid
   @CrossOrigin("*")
   @PostMapping("/addIncident")
@@ -58,7 +56,6 @@ public class IncidentController {
     return incident;
   }
 
-
   @PersistenceContext
   private EntityManager em;
 
@@ -78,25 +75,20 @@ public class IncidentController {
       if (field.equals("assigne")) {
         Join<Incident, User> assigneJoin = root.join("assigne");
         predicates.add(
-          criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0))
-        );
+            criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0)));
       } else if (field.equals("declarant")) {
         Join<Incident, User> declarantJoin = root.join("declarant");
         predicates.add(
-          criteriaBuilder.equal(
-            declarantJoin.get("firstName"),
-            modalities.get(0)
-          )
-        );
+            criteriaBuilder.equal(
+                declarantJoin.get("firstName"),
+                modalities.get(0)));
       } else if (field.equals("creationdate")) {
         predicates.add(
-          criteriaBuilder.equal(root.get("creationdate"), modalities.get(0))
-        );
+            criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
       } else if (field.equals("status")) {
         Join<Incident, Status> statusJoin = root.join("status");
         predicates.add(
-          criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0))
-        );
+            criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
       }
     }
 
@@ -106,13 +98,11 @@ public class IncidentController {
     return incidents;
   }
 
-
   @CrossOrigin("*")
   @PutMapping("/incidents/{id}")
   public ResponseEntity<Incident> updateIncident(
-    @PathVariable("id") int id,
-    @RequestBody Incident incident
-  ) {
+      @PathVariable("id") int id,
+      @RequestBody Incident incident) {
     Incident existingIncident = service.getIncidentById(id);
     if (existingIncident == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
