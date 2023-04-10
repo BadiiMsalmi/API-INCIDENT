@@ -64,7 +64,7 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("/forgetpassword")
+    @PostMapping("/checkEmail")
     public AccountResponse resetPasswordEmail(@RequestBody ResetPassword resetPassword) {
         User user = this.userRepository.findByEmailIgnoreCase(resetPassword.getEmail());
         AccountResponse accountResponse = new AccountResponse();
