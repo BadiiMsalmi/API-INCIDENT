@@ -29,4 +29,6 @@ public class RegisterRequest {
     @NotNull(message = "the password should not be null")
     @NotEmpty(message = "the password should not be empty")
     private String password;
+
+    private String role;
 }

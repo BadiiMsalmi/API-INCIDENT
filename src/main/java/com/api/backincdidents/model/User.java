@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.api.backincdidents.enumm.Role;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +37,7 @@ public class User implements UserDetails{
   @NotEmpty
   private String lastname;
 
-  @Enumerated(EnumType.STRING)
-  private Role role;
+  private String role;
 
   @NotNull
   @NotEmpty
@@ -55,7 +54,7 @@ public class User implements UserDetails{
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role.name()));  
+    return List.of(new SimpleGrantedAuthority(role));  
   }
 
   @Override

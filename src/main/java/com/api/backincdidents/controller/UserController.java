@@ -1,23 +1,32 @@
 package com.api.backincdidents.controller;
 
+import com.api.backincdidents.Dto.Firstname;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@CrossOrigin("*")
+@RequestMapping("/api/v1/user")
+@RequiredArgsConstructor
 public class UserController {
 
   @Autowired
@@ -26,14 +35,15 @@ public class UserController {
   @Autowired
   private UserRepository repo;
 
-  @CrossOrigin("*")
+  
   @GetMapping("/users")
   public List<User> getUsers() {
-    List<User> user = service.getAllUsers();
+    List<User> user = repo.findAll();
+    System.out.print(user);
     return user;
   }
 
-  @CrossOrigin("*")
+  
   @GetMapping("/admins")
   public List<User> getAdmins() {
     String role = "admin";
@@ -41,7 +51,7 @@ public class UserController {
     return user;
   }
 
-  @CrossOrigin("*")
+  
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
     String role = "declarant";
@@ -50,15 +60,16 @@ public class UserController {
   }
 
   // Autocomplete FOR ADMIN
-  @CrossOrigin("*")
+  
   @GetMapping("/searchByAdmin")
-  public List<User> searchByAdmin(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "admin");
+  public List<User> searchByAdmin(@RequestBody String firstName) {
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
+    System.out.println(firstName+"**************");
     return user;
   }
 
   // Autocomplete FOR normal USER
-  @CrossOrigin("*")
+  
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@Param("firstName") String firstName) {
     List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "declarant");
@@ -66,14 +77,18 @@ public class UserController {
     return user;
   }
 
-  @CrossOrigin("*")
+  
   @GetMapping("/user/{id}")
-  public User getUserById(@PathVariable int id) {
+  public ResponseEntity<Object> getUserById(@PathVariable int id) {
     User user = service.getUserById(id);
-    return user;
+    if(user == null){
+      String errorMessage = "No such user";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    return ResponseEntity.ok(user);
   }
 
-  @CrossOrigin("*")
+  
   @DeleteMapping("/user/{id}")
   public String deleteUser(@PathVariable int id, HttpServletResponse response) {
     try {

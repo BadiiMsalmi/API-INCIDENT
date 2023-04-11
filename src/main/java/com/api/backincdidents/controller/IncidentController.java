@@ -6,6 +6,9 @@ import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.service.IncidentService;
+
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -26,16 +29,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin("*")
+@RequestMapping("/api/v1/incident")
+@RequiredArgsConstructor
 public class IncidentController {
 
   @Autowired
   private IncidentService service;
 
   // Hedha el api bch tzid incident jdid
-  @CrossOrigin("*")
+
+  @CrossOrigin
   @PostMapping("/addIncident")
   public Incident addIncident(@RequestBody Incident incident) {
     Incident newIncident = service.addIncident(incident);
@@ -44,61 +52,66 @@ public class IncidentController {
 
   @CrossOrigin("*")
   @GetMapping("/incidents")
-  public List<Incident> getAllIncidents() {
+  public ResponseEntity<Object> getAllIncidents() {
     List<Incident> incidents = service.findAll();
-    return incidents;
+    if(incidents == null){
+      String errorMessage = "No incidents available";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    return ResponseEntity.ok(incidents);
   }
 
-  @CrossOrigin("*")
-  @GetMapping("/incident/{id}")
-  public Incident getIncidentsById(@PathVariable int id) {
+  @GetMapping("/getincident/{id}")
+  public ResponseEntity<Object> getIncidentsById(@PathVariable int id) {
     Incident incident = service.getIncidentById(id);
-    return incident;
+    if (incident == null) {
+      String errorMessage = "Incident not found with ID: " + id;
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    return ResponseEntity.ok(incident);
   }
 
   @PersistenceContext
   private EntityManager em;
 
-  @CrossOrigin("*")
   @PostMapping("/search")
-  public List<Incident> search(@RequestBody FilterDto filter) {
+public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
     CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
     Root<Incident> root = criteriaQuery.from(Incident.class);
     List<Predicate> predicates = new ArrayList<>();
 
     for (WhereDto where : filter.getWhere()) {
-      String field = where.getField();
-      // String operator = where.getOperator();
-      List<String> modalities = where.getModalities();
+        String field = where.getField();
+        List<String> modalities = where.getModalities();
 
-      if (field.equals("assigne")) {
-        Join<Incident, User> assigneJoin = root.join("assigne");
-        predicates.add(
-            criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0)));
-      } else if (field.equals("declarant")) {
-        Join<Incident, User> declarantJoin = root.join("declarant");
-        predicates.add(
-            criteriaBuilder.equal(
-                declarantJoin.get("firstName"),
-                modalities.get(0)));
-      } else if (field.equals("creationdate")) {
-        predicates.add(
-            criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
-      } else if (field.equals("status")) {
-        Join<Incident, Status> statusJoin = root.join("status");
-        predicates.add(
-            criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
-      }
+        if (field.equals("assigne")) {
+            Join<Incident, User> assigneJoin = root.join("assigne");
+            predicates.add(criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0)));
+        } else if (field.equals("declarant")) {
+            Join<Incident, User> declarantJoin = root.join("declarant");
+            predicates.add(criteriaBuilder.equal(declarantJoin.get("firstName"), modalities.get(0)));
+        } else if (field.equals("creationdate")) {
+            predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        } else if (field.equals("status")) {
+            Join<Incident, Status> statusJoin = root.join("status");
+            predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+        }
     }
 
     criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
     TypedQuery<Incident> query = em.createQuery(criteriaQuery);
     List<Incident> incidents = query.getResultList();
-    return incidents;
-  }
 
-  @CrossOrigin("*")
+    if (incidents.isEmpty()) {
+        String errorMessage = "No incidents found matching the search criteria";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    return ResponseEntity.ok(incidents);
+}
+
+
   @PutMapping("/incidents/{id}")
   public ResponseEntity<Incident> updateIncident(
       @PathVariable("id") int id,
