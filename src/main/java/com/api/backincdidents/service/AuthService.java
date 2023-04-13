@@ -7,7 +7,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.api.backincdidents.enumm.Role;
 import com.api.backincdidents.enumm.TokenType;
 import com.api.backincdidents.model.AuthenticationRequest;
 import com.api.backincdidents.model.AuthenticationResponse;
@@ -57,7 +56,7 @@ public class AuthService {
                                 .lastname(request.getLastname())
                                 .email(request.getEmail())
                                 .password(passwordEncoder.encode(request.getPassword()))
-                                .role("USER")
+                                .role(request.getRole())
                                 .build();
                 var savedUser = repository.save(user);
                 ConfirmationToken confirmationToken = new ConfirmationToken(user);

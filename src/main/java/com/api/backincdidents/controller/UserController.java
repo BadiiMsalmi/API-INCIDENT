@@ -1,7 +1,10 @@
 package com.api.backincdidents.controller;
 
-import com.api.backincdidents.Dto.Firstname;
+import com.api.backincdidents.model.Role;
+import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.RoleRepository;
+import com.api.backincdidents.repository.StatusRepository;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.service.UserService;
 
@@ -31,6 +34,12 @@ public class UserController {
 
   @Autowired
   private UserService service;
+
+  @Autowired
+  private StatusRepository statusRepository;
+
+  @Autowired
+  private RoleRepository roleRepository;
 
   @Autowired
   private UserRepository repo;
@@ -99,4 +108,17 @@ public class UserController {
           HttpStatus.NOT_FOUND, "Error removing the user.", exc);
     }
   }
+
+  @GetMapping("/allStatus")
+  public List<Status> getAllStatus(){
+    return statusRepository.findAll();
+  }
+
+
+  @GetMapping("/allRoles")
+  public List<Role> getAllRoles(){
+    return roleRepository.findAll();
+  }
+
+
 }

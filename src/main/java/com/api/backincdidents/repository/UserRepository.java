@@ -1,6 +1,5 @@
 package com.api.backincdidents.repository;
 
-import com.api.backincdidents.Dto.Firstname;
 import com.api.backincdidents.model.User;
 import java.util.List;
 import java.util.Optional;

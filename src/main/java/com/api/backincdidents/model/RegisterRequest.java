@@ -2,6 +2,7 @@ package com.api.backincdidents.model;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +31,9 @@ public class RegisterRequest {
     @NotEmpty(message = "the password should not be empty")
     private String password;
 
+
+    @NotNull(message = "the role should not be null")
+    @NotEmpty(message = "the role should not be empty")
+    @Pattern(regexp = "DECLARANT|ASSEGNE", message = "the role should be either DECLARANT or ASSEGNE")
     private String role;
 }
