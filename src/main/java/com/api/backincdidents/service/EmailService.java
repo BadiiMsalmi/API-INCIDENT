@@ -28,7 +28,7 @@ public class EmailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Forget password!");
-        mailMessage.setFrom("admibot69@outlook.fr");
+        mailMessage.setFrom("3KxCLFjkmZ9bN7e@mail.com");
         mailMessage.setText(
                 "Hello, " + user.getFirstname() + "\nHere's your code to change your password: " + token.getToken());
         javaMailSender.send(mailMessage);

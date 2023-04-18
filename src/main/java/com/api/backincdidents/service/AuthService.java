@@ -64,7 +64,7 @@ public class AuthService {
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(user.getEmail());
                 mailMessage.setSubject("Complete Registration!");
-                mailMessage.setFrom("admibot69@outlook.fr");
+                mailMessage.setFrom("3KxCLFjkmZ9bN7e@mail.com");
                 mailMessage.setText("Hello,"+user.getFirstname()+"\nTo confirm your account, please click here : http://localhost:8080/api/v1/auth/confirm-account?token="+confirmationToken.getConfirmationToken());
                 emailService.sendEmail(mailMessage);
                 var jwtToken = jwtService.generateToken(user);
