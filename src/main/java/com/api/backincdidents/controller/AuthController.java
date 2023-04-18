@@ -27,7 +27,6 @@ import com.api.backincdidents.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -37,18 +36,21 @@ public class AuthController {
     private final EmailService emailService;
     private final UserService userService;
 
+    @CrossOrigin("*")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    @CrossOrigin("*")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
 
+    @CrossOrigin("*")
     @GetMapping("/confirm-account")
     public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token") String confirmationToken) {
         ConfirmationToken token = authService.getConfirmationToken(confirmationToken);
@@ -64,6 +66,7 @@ public class AuthController {
         return modelAndView;
     }
 
+    @CrossOrigin("*")
     @PostMapping("/checkEmail")
     public AccountResponse resetPasswordEmail(@RequestBody ResetPassword resetPassword) {
         User user = this.userRepository.findByEmailIgnoreCase(resetPassword.getEmail());
@@ -78,6 +81,7 @@ public class AuthController {
         return accountResponse;
     }
 
+    @CrossOrigin("*")
     @PostMapping("/resetPassword")
     public AccountResponse resetPassword(@RequestBody NewPassword newPassword) {
         AccountResponse accountResponse = new AccountResponse();

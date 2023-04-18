@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -44,7 +44,7 @@ public class UserController {
   @Autowired
   private UserRepository repo;
 
-  
+  @CrossOrigin("*")
   @GetMapping("/users")
   public List<User> getUsers() {
     List<User> user = repo.findAll();
@@ -52,7 +52,7 @@ public class UserController {
     return user;
   }
 
-  
+  @CrossOrigin("*")
   @GetMapping("/admins")
   public List<User> getAdmins() {
     String role = "admin";
@@ -60,7 +60,7 @@ public class UserController {
     return user;
   }
 
-  
+  @CrossOrigin("*")
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
     String role = "declarant";
@@ -69,7 +69,7 @@ public class UserController {
   }
 
   // Autocomplete FOR ADMIN
-  
+  @CrossOrigin("*")
   @GetMapping("/searchByAdmin")
   public List<User> searchByAdmin(@RequestBody String firstName) {
     List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
@@ -78,7 +78,7 @@ public class UserController {
   }
 
   // Autocomplete FOR normal USER
-  
+  @CrossOrigin("*")
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@Param("firstName") String firstName) {
     List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "declarant");
@@ -86,7 +86,7 @@ public class UserController {
     return user;
   }
 
-  
+  @CrossOrigin("*")
   @GetMapping("/user/{id}")
   public ResponseEntity<Object> getUserById(@PathVariable int id) {
     User user = service.getUserById(id);
@@ -108,13 +108,13 @@ public class UserController {
           HttpStatus.NOT_FOUND, "Error removing the user.", exc);
     }
   }
-
+  @CrossOrigin("*")
   @GetMapping("/allStatus")
   public List<Status> getAllStatus(){
     return statusRepository.findAll();
   }
 
-
+  @CrossOrigin("*")
   @GetMapping("/allRoles")
   public List<Role> getAllRoles(){
     return roleRepository.findAll();
