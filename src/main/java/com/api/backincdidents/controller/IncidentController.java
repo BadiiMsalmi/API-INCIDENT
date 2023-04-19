@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/incident")
 @RequiredArgsConstructor
@@ -45,15 +45,13 @@ public class IncidentController {
   // Hedha el api bch tzid incident jdid
 
   
-  @CrossOrigin("*")
   @PostMapping("/addIncident")
   public Incident addIncident(@RequestBody Incident incident) {
     Incident newIncident = service.addIncident(incident);
     return newIncident;
   }
 
- 
-  @CrossOrigin("*")
+  
   @GetMapping("/incidents")
   public ResponseEntity<Object> getAllIncidents() {
     List<Incident> incidents = service.findAll();
@@ -64,7 +62,7 @@ public class IncidentController {
     return ResponseEntity.ok(incidents);
   }
 
-  @CrossOrigin("*")
+ 
   @GetMapping("/getincident/{id}")
   public ResponseEntity<Object> getIncidentsById(@PathVariable int id) {
     Incident incident = service.getIncidentById(id);
@@ -79,7 +77,7 @@ public class IncidentController {
   private EntityManager em;
 
 
-@CrossOrigin("*")
+
   @PostMapping("/search")
 public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -119,7 +117,7 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
 
 
 
-@CrossOrigin("*")
+
   @PutMapping("/incidents/{id}")
   public ResponseEntity<Incident> updateIncident(
       @PathVariable("id") int id,
