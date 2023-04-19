@@ -26,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-@RestController
+
 @CrossOrigin("*")
+@RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -71,7 +72,7 @@ public class UserController {
   // Autocomplete FOR ADMIN
   
   @GetMapping("/searchByAdmin")
-  public List<User> searchByAdmin(@RequestBody String firstName) {
+  public List<User> searchByAdmin(@Param("firstName") String firstName) {
     List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
     System.out.println(firstName+"**************");
     return user;
@@ -81,7 +82,7 @@ public class UserController {
   
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "declarant");
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
     System.out.println(firstName);
     return user;
   }
