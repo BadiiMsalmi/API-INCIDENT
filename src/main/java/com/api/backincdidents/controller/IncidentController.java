@@ -91,10 +91,10 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
 
         if (field.equals("assigne")) {
             Join<Incident, User> assigneJoin = root.join("assigne");
-            predicates.add(criteriaBuilder.equal(assigneJoin.get("firstName"), modalities.get(0)));
+            predicates.add(criteriaBuilder.equal(assigneJoin.get("firstname"), modalities.get(0)));
         } else if (field.equals("declarant")) {
             Join<Incident, User> declarantJoin = root.join("declarant");
-            predicates.add(criteriaBuilder.equal(declarantJoin.get("firstName"), modalities.get(0)));
+            predicates.add(criteriaBuilder.equal(declarantJoin.get("firstname"), modalities.get(0)));
         } else if (field.equals("creationdate")) {
             predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
         } else if (field.equals("status")) {

@@ -1,5 +1,6 @@
 package com.api.backincdidents.controller;
 
+import com.api.backincdidents.Dto.Firstname;
 import com.api.backincdidents.model.Role;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -72,18 +74,18 @@ public class UserController {
   // Autocomplete FOR ADMIN
   
   @GetMapping("/searchByAdmin")
-  public List<User> searchByAdmin(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
-    System.out.println(firstName+"**************");
+  public List<User> searchByAdmin(@RequestParam String firstName) {
+    String role = "Assigned";
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
+    System.out.println(firstName+"**************"+role);
     return user;
   }
 
   // Autocomplete FOR normal USER
-  
   @GetMapping("/searchByUser")
-  public List<User> searchByUser(@Param("firstName") String firstName) {
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', "USER");
-    System.out.println(firstName);
+  public List<User> searchByUser(@RequestParam String firstName) {
+    String role = "Declarant";
+    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
     return user;
   }
 

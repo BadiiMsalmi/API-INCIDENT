@@ -8,7 +8,7 @@ public class FilterDto {
 
     private Integer skip;
 
-    private Integer limit;
+    //private Integer limit;
 
     public Integer getSkip() {
 
@@ -22,17 +22,17 @@ public class FilterDto {
 
     }
 
-    public Integer getLimit() {
+    /*public Integer getLimit() {
 
         return this.limit;
 
-    }
+    }*/
 
-    public void setLimit(Integer limit) {
+    /*public void setLimit(Integer limit) {
 
         this.limit = limit;
 
-    }
+    }*/
 
     public List<WhereDto> getWhere() {
 
