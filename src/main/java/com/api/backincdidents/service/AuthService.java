@@ -32,7 +32,6 @@ public class AuthService {
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;
         private final AuthenticationManager authenticationManager;
-        private final UserRepository userRepository;
         private final TokenRepository tokenRepository;
         private final ObjectsValidator<RegisterRequest> registerRequestValidator;
         private final ObjectsValidator<AuthenticationRequest> authenticationRequestValidator;
@@ -46,7 +45,7 @@ public class AuthService {
                                         .error(String.join(" \n ", violations))
                                         .build();
                 }
-                if (userRepository.existsByEmail(request.getEmail())) {
+                if (repository.existsByEmail(request.getEmail())) {
                         return AuthenticationResponse.builder()
                                         .error("Email already in use")
                                         .build();

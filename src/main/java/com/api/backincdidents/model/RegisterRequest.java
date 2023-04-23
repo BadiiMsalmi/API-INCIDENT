@@ -34,6 +34,6 @@ public class RegisterRequest {
 
     @NotNull(message = "the role should not be null")
     @NotEmpty(message = "the role should not be empty")
-    @Pattern(regexp = "declarant|assigned", message = "the role should be either DECLARANT or ASSEGNE")
+    @Pattern(regexp = "Declarant|Assigned", message = "the role should be either DECLARANT or ASSEGNE")
     private String role;
 }

@@ -1,5 +1,7 @@
 package com.api.backincdidents.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,11 @@ import com.api.backincdidents.model.AuthenticationResponse;
 import com.api.backincdidents.model.ConfirmationToken;
 import com.api.backincdidents.model.RegisterRequest;
 import com.api.backincdidents.model.RestorePasswordToken;
+import com.api.backincdidents.model.Role;
+import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.RoleRepository;
+import com.api.backincdidents.repository.StatusRepository;
 import com.api.backincdidents.repository.UserRepository;
 import com.api.backincdidents.service.AuthService;
 import com.api.backincdidents.service.EmailService;
@@ -35,6 +41,10 @@ public class AuthController {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final StatusRepository statusRepository;
+
+
 
     @CrossOrigin("*")
     @PostMapping("/register")
@@ -97,4 +107,14 @@ public class AuthController {
         return accountResponse;
 
     }
+
+    @GetMapping("/allRoles")
+  public List<Role> getAllRoles(){
+    return roleRepository.findAll();
+  }
+
+  @GetMapping("/allStatus")
+  public List<Status> getAllStatus(){
+    return statusRepository.findAll();
+  }
 }
