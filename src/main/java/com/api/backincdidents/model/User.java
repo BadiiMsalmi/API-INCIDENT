@@ -1,5 +1,6 @@
 package com.api.backincdidents.model;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,13 +12,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonSerialize(using = User.UserSerializer.class)
 @Data
 @Builder
 @NoArgsConstructor
@@ -90,5 +95,20 @@ public class User implements UserDetails{
   public Object orElseThrow(Object object) {
     return null;
   }
+
+  public static class UserSerializer extends JsonSerializer<User> {
+    @Override
+    public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("id", user.getId());
+        jsonGenerator.writeStringField("firstname", user.getFirstname());
+        jsonGenerator.writeStringField("lastname", user.getLastname());
+        jsonGenerator.writeStringField("role", user.getRole());
+        jsonGenerator.writeStringField("email", user.getEmail());
+        jsonGenerator.writeBooleanField("isEnabled", user.isEnabled());
+        jsonGenerator.writeEndObject();
+    }
+}
+
   
 }
