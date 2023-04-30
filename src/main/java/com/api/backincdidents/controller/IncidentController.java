@@ -152,7 +152,7 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
   }
 
   @GetMapping("/incidentsByUser")
-  public ResponseEntity<Object> getIncidentsForUser(@RequestBody Map<String, String>  requestBody){
+  public ResponseEntity<Object> getIncidentsForUser(@RequestParam Map<String, String>  requestBody){
     String email = requestBody.get("email");
     System.out.println(email);
     List<Incident> incidents = service.getIncidentsForUser(email);
