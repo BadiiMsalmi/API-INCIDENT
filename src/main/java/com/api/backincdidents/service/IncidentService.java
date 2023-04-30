@@ -33,7 +33,9 @@ public class IncidentService {
     return repo.save(incident);
   }
 
-  
+  public List<Incident> getIncidentsForUser(String email) {
+    return repo.findByDeclarantEmailOrAssigneEmail(email, email);
+}
 
 
 }

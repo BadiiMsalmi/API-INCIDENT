@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -147,5 +149,17 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
 
     Incident updatedIncident = service.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
+  }
+
+  @GetMapping("/incidentsByUser")
+  public ResponseEntity<Object> getIncidentsForUser(@RequestBody Map<String, String>  requestBody){
+    String email = requestBody.get("email");
+    System.out.println(email);
+    List<Incident> incidents = service.getIncidentsForUser(email);
+    if(incidents == null){
+      String errorMessage = "No incidents available";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    return ResponseEntity.ok(incidents);
   }
 }

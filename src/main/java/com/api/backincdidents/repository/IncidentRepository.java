@@ -13,6 +13,8 @@ public List<Incident> findByAssigne_FirstnameLikeAndDeclarant_FirstnameLikeAndSt
 @SuppressWarnings("unchecked")
 public Incident save(Incident incident);
 
+List<Incident> findByDeclarantEmailOrAssigneEmail(String email1, String email2);
+
 
 
 }
