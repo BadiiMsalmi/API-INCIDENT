@@ -78,9 +78,44 @@ public class IncidentController {
   @PersistenceContext
   private EntityManager em;
 
-
-
   @PostMapping("/search")
+  public ResponseEntity<Object> search(@RequestParam String email,@RequestBody FilterDto filter) {
+      CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+      CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
+      Root<Incident> root = criteriaQuery.from(Incident.class);
+      List<Predicate> predicates = new ArrayList<>();
+  
+      Join<Incident, User> assigneJoin = root.join("assigne");
+      predicates.add(criteriaBuilder.equal(assigneJoin.get("email"), email));
+  
+      for (WhereDto where : filter.getWhere()) {
+          String field = where.getField();
+          List<String> modalities = where.getModalities();
+  
+          if (field.equals("declarant")) {
+            Join<Incident, User> declarantJoin = root.join("declarant");
+            predicates.add(criteriaBuilder.equal(declarantJoin.get("firstname"), modalities.get(0)));
+        } else if (field.equals("creationdate")) {
+            predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        } else if (field.equals("status")) {
+            Join<Incident, Status> statusJoin = root.join("status");
+            predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+        }
+      }
+  
+      criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
+      TypedQuery<Incident> query = em.createQuery(criteriaQuery);
+      List<Incident> incidents = query.getResultList();
+  
+      if (incidents.isEmpty()) {
+          String errorMessage = "No incidents found matching the search criteria";
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+      }
+  
+      return ResponseEntity.ok(incidents);
+  }
+
+  @PostMapping("/searchAdmin")
 public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
     CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
