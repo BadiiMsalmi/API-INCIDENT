@@ -2,9 +2,11 @@ package com.api.backincdidents.controller;
 
 import com.api.backincdidents.Dto.FilterDto;
 import com.api.backincdidents.Dto.WhereDto;
+import com.api.backincdidents.model.Image;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.ImageRepository;
 import com.api.backincdidents.service.IncidentService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,13 +19,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Deflater;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @CrossOrigin("*")
@@ -43,6 +51,8 @@ public class IncidentController {
 
   @Autowired
   private IncidentService service;
+
+  private ImageRepository imageRepository;
 
   // Hedha el api bch tzid incident jdid
 
@@ -197,4 +207,34 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     }
     return ResponseEntity.ok(incidents);
   }
+
+  @PostMapping("/upload")
+	public BodyBuilder uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+
+		System.out.println("Original Image Byte Size - " + file.getBytes().length);
+		Image img = new Image(file.getOriginalFilename(), file.getContentType(),
+				compressBytes(file.getBytes()));
+		imageRepository.save(img);
+		return ResponseEntity.status(HttpStatus.OK);
+	}
+
+  public static byte[] compressBytes(byte[] data) {
+		Deflater deflater = new Deflater();
+		deflater.setInput(data);
+		deflater.finish();
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		while (!deflater.finished()) {
+			int count = deflater.deflate(buffer);
+			outputStream.write(buffer, 0, count);
+		}
+		try {
+			outputStream.close();
+		} catch (IOException e) {
+		}
+		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+
+		return outputStream.toByteArray();
+	}
 }
