@@ -101,6 +101,11 @@ public class UserController {
     }
   }
   
+
+  @GetMapping("/getUserByEmail")
+  public User getUserByEmail(@RequestParam String email){
+    return service.getUserByEmailIgnoreCase(email);
+  }
   
   
 
