@@ -2,11 +2,9 @@ package com.api.backincdidents.controller;
 
 import com.api.backincdidents.Dto.FilterDto;
 import com.api.backincdidents.Dto.WhereDto;
-import com.api.backincdidents.model.Image;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
-import com.api.backincdidents.repository.ImageRepository;
 import com.api.backincdidents.service.IncidentService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,17 +18,17 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Deflater;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,18 +50,10 @@ public class IncidentController {
   @Autowired
   private IncidentService service;
 
-  private ImageRepository imageRepository;
-
-  // Hedha el api bch tzid incident jdid
+  public static String uploadDirectory = System.getProperty("user.dir")+"resources/imageData";
 
   
-  @PostMapping("/addIncident")
-  public Incident addIncident(@RequestBody Incident incident) {
-    Incident newIncident = service.addIncident(incident);
-    return newIncident;
-  }
 
-  
   @GetMapping("/incidents")
   public ResponseEntity<Object> getAllIncidents() {
     List<Incident> incidents = service.findAll();
@@ -208,33 +198,22 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     return ResponseEntity.ok(incidents);
   }
 
-  @PostMapping("/upload")
-	public BodyBuilder uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+  @PostMapping(value = "/addIncident", consumes = "multipart/form-data")
+  public Incident addIncident(@RequestBody Incident incident,@RequestParam("img") MultipartFile file) {
 
-		System.out.println("Original Image Byte Size - " + file.getBytes().length);
-		Image img = new Image(file.getOriginalFilename(), file.getContentType(),
-				compressBytes(file.getBytes()));
-		imageRepository.save(img);
-		return ResponseEntity.status(HttpStatus.OK);
-	}
+    StringBuilder fileNames = new StringBuilder();
+    String fileName = incident.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().length()-4);
+    Path fileNameAndPath =Paths.get(uploadDirectory, fileName);
 
-  public static byte[] compressBytes(byte[] data) {
-		Deflater deflater = new Deflater();
-		deflater.setInput(data);
-		deflater.finish();
+    try {
+      Files.write(fileNameAndPath, file.getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-		byte[] buffer = new byte[1024];
-		while (!deflater.finished()) {
-			int count = deflater.deflate(buffer);
-			outputStream.write(buffer, 0, count);
-		}
-		try {
-			outputStream.close();
-		} catch (IOException e) {
-		}
-		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+    incident.setImage(fileName);
 
-		return outputStream.toByteArray();
-	}
+    Incident newIncident = service.addIncident(incident);
+    return newIncident;
+  }
 }

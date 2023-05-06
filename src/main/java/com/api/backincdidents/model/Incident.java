@@ -39,7 +39,5 @@ public class Incident {
   @JoinColumn(name = "assigne_id")
   private User assigne;
 
-  @ManyToOne
-  @JoinColumn(name="image")
-  private Image image;
+  private String image;
 }
