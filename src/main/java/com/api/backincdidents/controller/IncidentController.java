@@ -198,21 +198,8 @@ public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
     return ResponseEntity.ok(incidents);
   }
 
-  @PostMapping(value = "/addIncident", consumes = "multipart/form-data")
-  public Incident addIncident(@RequestBody Incident incident,@RequestParam("img") MultipartFile file) {
-
-    StringBuilder fileNames = new StringBuilder();
-    String fileName = incident.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().length()-4);
-    Path fileNameAndPath =Paths.get(uploadDirectory, fileName);
-
-    try {
-      Files.write(fileNameAndPath, file.getBytes());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    incident.setImage(fileName);
-
+  @PostMapping(value = "/addIncident")
+  public Incident addIncident(@RequestBody Incident incident) {
     Incident newIncident = service.addIncident(incident);
     return newIncident;
   }
