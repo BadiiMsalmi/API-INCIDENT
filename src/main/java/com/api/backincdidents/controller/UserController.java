@@ -39,8 +39,7 @@ public class UserController {
   
   @GetMapping("/users")
   public List<User> getUsers() {
-    List<User> user = repo.findAll();
-    System.out.print(user);
+    List<User> user = service.getAllUsers();
     return user;
   }
 

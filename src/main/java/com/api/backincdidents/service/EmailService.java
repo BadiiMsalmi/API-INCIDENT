@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.backincdidents.model.RestorePasswordToken;
 import com.api.backincdidents.model.User;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailService {
