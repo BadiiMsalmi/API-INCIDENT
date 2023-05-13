@@ -33,7 +33,7 @@ import java.util.zip.Inflater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -196,13 +196,13 @@ public class IncidentController {
     return ResponseEntity.ok(incidents);
 }
 
+  @Autowired
+  private SimpMessagingTemplate messagingTemplate;
 
 
 
   @PutMapping("/incidents/{id}")
-  public ResponseEntity<Incident> updateIncident(
-      @PathVariable("id") int id,
-      @RequestBody Incident incident) {
+  public ResponseEntity<Incident> updateIncident(@PathVariable("id") int id, @RequestBody Incident incident) {
     Incident existingIncident = service.getIncidentById(id);
     if (existingIncident == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -225,7 +225,9 @@ public class IncidentController {
     if (incident.getAssigne() != null) {
       existingIncident.setAssigne(incident.getAssigne());
     }
-
+    // Send a message to "/app/message" destination
+    messagingTemplate.convertAndSend("/app/message", "Incident updated with ID: " + id);
+    
     Incident updatedIncident = service.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
   }
@@ -292,7 +294,7 @@ public class IncidentController {
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[4096];
 		try {
 			while (!inflater.finished()) {
 				int count = inflater.inflate(buffer);
