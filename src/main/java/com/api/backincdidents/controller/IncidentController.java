@@ -251,6 +251,14 @@ public class IncidentController {
         newNotification.setText("A new ticket has been assigned to you.");
         newNotification.setAssigne(incident.getAssigne());
         notificationService.saveNotification(newNotification);
+
+        Notification newNotification1 = new Notification();
+        newNotification1.setDate(LocalDate.now());
+        newNotification1.setTime(LocalTime.now());
+        newNotification1.setText("Your ticket has been updated.");
+        newNotification1.setDeclarant(existingIncident.getDeclarant());
+        notificationService.saveNotification(newNotification1);
+
     }
 
     Incident updatedIncident = service.updateIncident(existingIncident);
@@ -275,7 +283,6 @@ public class IncidentController {
 
     if (newIncident == null) {
       String errorMessage = "Error adding the ticket";
-      System.out.print("herrreeee");
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
@@ -294,7 +301,6 @@ public class IncidentController {
 
   @PostMapping("/upload")
   public Optional<ImageModel> uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
-    System.out.println("************************************************************************");
     System.out.println("Original Image Byte Size -  " + file.getBytes().length);
     ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
         compressBytes(file.getBytes()));
@@ -326,7 +332,6 @@ public class IncidentController {
   public ImageModel getImage(@PathVariable("id") Long id) throws IOException {
 
     final Optional<ImageModel> retrievedImage = imageRepository.findById(id);
-    System.out.println("idddddd  :  " + id);
     ImageModel img = new ImageModel(retrievedImage.get().getName(), retrievedImage.get().getType(),
         decompressBytes(retrievedImage.get().getPicByte()));
     return img;
