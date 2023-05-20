@@ -1,5 +1,7 @@
 package com.api.backincdidents.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,9 +27,9 @@ public class Incident {
   private String libelle;
 
   @Column(name = "CreationDate")
-  private String creationdate;
+  private LocalDate creationdate; // badelt hedhi mn string el localdate ken saret mochkla rajaaa3ha 
 
-  @ManyToOne 
+  @ManyToOne
   @JoinColumn(name = "status_id")
   private Status status;
 
@@ -43,4 +45,6 @@ public class Incident {
   @JoinColumn(name = "image_id")
   private ImageModel image;
 
+  @Column(name = "closure_date")
+  private LocalDate closureDate;
 }

@@ -2,6 +2,7 @@ package com.api.backincdidents.service;
 
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.UserRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -54,4 +55,6 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(password));
     userRepo.save(user);
   }
+
+  
 }

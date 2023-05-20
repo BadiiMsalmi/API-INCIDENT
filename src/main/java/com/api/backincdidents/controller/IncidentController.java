@@ -237,6 +237,8 @@ public class IncidentController {
         newNotification.setDeclarant(existingIncident.getDeclarant());
         notificationService.saveNotification(newNotification);
 
+        existingIncident.setClosureDate(LocalDate.now());
+
       }
     }
     if (incident.getDeclarant() != null) {
