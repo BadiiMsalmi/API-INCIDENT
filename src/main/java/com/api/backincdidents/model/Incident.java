@@ -47,4 +47,7 @@ public class Incident {
 
   @Column(name = "closure_date")
   private LocalDate closureDate;
+
+  @Column(name = "time_limit")
+  private Integer timeLimit;
 }

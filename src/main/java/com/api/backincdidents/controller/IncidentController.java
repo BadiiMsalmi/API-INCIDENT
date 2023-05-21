@@ -108,7 +108,8 @@ public class IncidentController {
         Join<Incident, User> declarantJoin = root.join("declarant");
         predicates.add(criteriaBuilder.equal(declarantJoin.get("firstname"), modalities.get(0)));
       } else if (field.equals("creationdate")) {
-        predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        LocalDate creationDate = LocalDate.parse(modalities.get(0));
+        predicates.add(criteriaBuilder.equal(root.get("creationdate"),creationDate));
       } else if (field.equals("status")) {
         Join<Incident, Status> statusJoin = root.join("status");
         predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
@@ -145,7 +146,8 @@ public class IncidentController {
         Join<Incident, User> declarantJoin = root.join("assigne");
         predicates.add(criteriaBuilder.equal(declarantJoin.get("firstname"), modalities.get(0)));
       } else if (field.equals("creationdate")) {
-        predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        LocalDate creationDate = LocalDate.parse(modalities.get(0));
+        predicates.add(criteriaBuilder.equal(root.get("creationdate"),creationDate));
       } else if (field.equals("status")) {
         Join<Incident, Status> statusJoin = root.join("status");
         predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
@@ -182,11 +184,15 @@ public class IncidentController {
         Join<Incident, User> declarantJoin = root.join("declarant");
         predicates.add(criteriaBuilder.equal(declarantJoin.get("firstname"), modalities.get(0)));
       } else if (field.equals("creationdate")) {
-        predicates.add(criteriaBuilder.equal(root.get("creationdate"), modalities.get(0)));
+        LocalDate creationDate = LocalDate.parse(modalities.get(0));
+        predicates.add(criteriaBuilder.equal(root.get("creationdate"),creationDate));
       } else if (field.equals("status")) {
         Join<Incident, Status> statusJoin = root.join("status");
         predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+      } else if (field.equals("closureDate")) {
+        predicates.add(criteriaBuilder.equal(root.get("closureDate"), modalities.get(0)));
       }
+
     }
 
     criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
@@ -228,7 +234,7 @@ public class IncidentController {
         newNotification.setDeclarant(existingIncident.getDeclarant());
         notificationService.saveNotification(newNotification);
 
-      }else if(incident.getStatus().getLabel().equals("Terminer")){
+      } else if (incident.getStatus().getLabel().equals("Terminer")) {
 
         Notification newNotification = new Notification();
         newNotification.setDate(LocalDate.now());
@@ -248,19 +254,21 @@ public class IncidentController {
       existingIncident.setAssigne(incident.getAssigne());
 
       Notification newNotification = new Notification();
-        newNotification.setDate(LocalDate.now());
-        newNotification.setTime(LocalTime.now());
-        newNotification.setText("A new ticket has been assigned to you.");
-        newNotification.setAssigne(incident.getAssigne());
-        notificationService.saveNotification(newNotification);
+      newNotification.setDate(LocalDate.now());
+      newNotification.setTime(LocalTime.now());
+      newNotification.setText("A new ticket has been assigned to you.");
+      newNotification.setAssigne(incident.getAssigne());
+      notificationService.saveNotification(newNotification);
 
-        Notification newNotification1 = new Notification();
-        newNotification1.setDate(LocalDate.now());
-        newNotification1.setTime(LocalTime.now());
-        newNotification1.setText("Your ticket has been updated.");
-        newNotification1.setDeclarant(existingIncident.getDeclarant());
-        notificationService.saveNotification(newNotification1);
+      Notification newNotification1 = new Notification();
+      newNotification1.setDate(LocalDate.now());
+      newNotification1.setTime(LocalTime.now());
+      newNotification1.setText("Your ticket has been updated.");
+      newNotification1.setDeclarant(existingIncident.getDeclarant());
+      notificationService.saveNotification(newNotification1);
 
+    }if (incident.getTimeLimit() != null) {
+      existingIncident.setTimeLimit(incident.getTimeLimit());
     }
 
     Incident updatedIncident = service.updateIncident(existingIncident);
@@ -355,4 +363,136 @@ public class IncidentController {
     }
     return outputStream.toByteArray();
   }
+
+  @PostMapping("/reportAdmin")
+  public ResponseEntity<Object> report(@RequestBody FilterDto filter) {
+    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+    CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
+    Root<Incident> root = criteriaQuery.from(Incident.class);
+    List<Predicate> predicates = new ArrayList<>();
+    
+    LocalDate startDate = null;
+    LocalDate endDate = null;
+    
+    for (WhereDto where : filter.getWhere()) {
+      String field = where.getField();
+      List<String> modalities = where.getModalities();
+    
+      if (field.equals("startDate")) {
+        startDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("endDate")) {
+        endDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("status")) {
+        Join<Incident, Status> statusJoin = root.join("status");
+        predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+      } 
+    }
+    
+    if (startDate != null && endDate != null) {
+      predicates.add(criteriaBuilder.between(root.get("creationdate"), startDate, endDate));
+    }
+    
+    criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
+    TypedQuery<Incident> query = em.createQuery(criteriaQuery);
+    List<Incident> incidents = query.getResultList();
+    
+      
+    if (incidents.isEmpty()) {
+      String errorMessage = "No incidents found matching the search criteria";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    
+    return ResponseEntity.ok(incidents);
+  }
+
+  
+  @PostMapping("/reportDeclarant")
+  public ResponseEntity<Object> reportD(@RequestParam String email,@RequestBody FilterDto filter) {
+    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+    CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
+    Root<Incident> root = criteriaQuery.from(Incident.class);
+    List<Predicate> predicates = new ArrayList<>();
+    
+    Join<Incident, User> assigneJoin = root.join("declarant");
+    predicates.add(criteriaBuilder.equal(assigneJoin.get("email"), email));
+    
+    LocalDate startDate = null;
+    LocalDate endDate = null;
+    
+    for (WhereDto where : filter.getWhere()) {
+      String field = where.getField();
+      List<String> modalities = where.getModalities();
+    
+      if (field.equals("startDate")) {
+        startDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("endDate")) {
+        endDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("status")) {
+        Join<Incident, Status> statusJoin = root.join("status");
+        predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+      } 
+    }
+    
+    if (startDate != null && endDate != null) {
+      predicates.add(criteriaBuilder.between(root.get("creationdate"), startDate, endDate));
+    }
+    
+    criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
+    TypedQuery<Incident> query = em.createQuery(criteriaQuery);
+    List<Incident> incidents = query.getResultList();
+    
+      
+    if (incidents.isEmpty()) {
+      String errorMessage = "No incidents found matching the search criteria";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    
+    return ResponseEntity.ok(incidents);
+  }
+
+
+  @PostMapping("/reportAssigne")
+  public ResponseEntity<Object> reportA(@RequestParam String email,@RequestBody FilterDto filter) {
+    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+    CriteriaQuery<Incident> criteriaQuery = criteriaBuilder.createQuery(Incident.class);
+    Root<Incident> root = criteriaQuery.from(Incident.class);
+    List<Predicate> predicates = new ArrayList<>();
+    
+    Join<Incident, User> assigneJoin = root.join("assigne");
+    predicates.add(criteriaBuilder.equal(assigneJoin.get("email"), email));
+    
+    LocalDate startDate = null;
+    LocalDate endDate = null;
+    
+    for (WhereDto where : filter.getWhere()) {
+      String field = where.getField();
+      List<String> modalities = where.getModalities();
+    
+      if (field.equals("startDate")) {
+        startDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("endDate")) {
+        endDate = LocalDate.parse(modalities.get(0));
+      } else if (field.equals("status")) {
+        Join<Incident, Status> statusJoin = root.join("status");
+        predicates.add(criteriaBuilder.equal(statusJoin.get("label"), modalities.get(0)));
+      } 
+    }
+    
+    if (startDate != null && endDate != null) {
+      predicates.add(criteriaBuilder.between(root.get("creationdate"), startDate, endDate));
+    }
+    
+    criteriaQuery.select(root).where(predicates.toArray(new Predicate[] {}));
+    TypedQuery<Incident> query = em.createQuery(criteriaQuery);
+    List<Incident> incidents = query.getResultList();
+    
+      
+    if (incidents.isEmpty()) {
+      String errorMessage = "No incidents found matching the search criteria";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    
+    return ResponseEntity.ok(incidents);
+  }
+  
 }
