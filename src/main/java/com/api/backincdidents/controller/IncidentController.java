@@ -56,7 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class IncidentController {
 
   @Autowired
-  private IncidentService service;
+  private IncidentService incidentService;
 
   @Autowired
   private ImageRepository imageRepository;
@@ -69,7 +69,7 @@ public class IncidentController {
 
   @GetMapping("/incidents")
   public ResponseEntity<Object> getAllIncidents() {
-    List<Incident> incidents = service.findAll();
+    List<Incident> incidents = incidentService.findAll();
     if (incidents == null) {
       String errorMessage = "No incidents available";
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
@@ -79,7 +79,7 @@ public class IncidentController {
 
   @GetMapping("/getincident/{id}")
   public ResponseEntity<Object> getIncidentsById(@PathVariable int id) {
-    Incident incident = service.getIncidentById(id);
+    Incident incident = incidentService.getIncidentById(id);
     if (incident == null) {
       String errorMessage = "Incident not found with ID: " + id;
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
@@ -209,7 +209,7 @@ public class IncidentController {
 
   @PutMapping("/incidents/{id}")
   public ResponseEntity<Incident> updateIncident(@PathVariable("id") int id, @RequestBody Incident incident) {
-    Incident existingIncident = service.getIncidentById(id);
+    Incident existingIncident = incidentService.getIncidentById(id);
     if (existingIncident == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -271,7 +271,7 @@ public class IncidentController {
       existingIncident.setTimeLimit(incident.getTimeLimit());
     }
 
-    Incident updatedIncident = service.updateIncident(existingIncident);
+    Incident updatedIncident = incidentService.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
   }
 
@@ -279,7 +279,7 @@ public class IncidentController {
   public ResponseEntity<Object> getIncidentsForUser(@RequestParam Map<String, String> requestBody) {
     String email = requestBody.get("email");
     System.out.println(email);
-    List<Incident> incidents = service.getIncidentsForUser(email);
+    List<Incident> incidents = incidentService.getIncidentsForUser(email);
     if (incidents == null) {
       String errorMessage = "No incidents available";
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
@@ -289,7 +289,7 @@ public class IncidentController {
 
   @PostMapping(value = "/addIncident")
   public ResponseEntity<Object> addIncident(@RequestBody Incident incident) {
-    Incident newIncident = service.addIncident(incident);
+    Incident newIncident = incidentService.addIncident(incident);
 
     if (newIncident == null) {
       String errorMessage = "Error adding the ticket";
@@ -494,5 +494,30 @@ public class IncidentController {
     
     return ResponseEntity.ok(incidents);
   }
+
+  @PostMapping("/revockeTicket")
+  public ResponseEntity<Incident> setTicketToRevocked(@RequestParam("id") int id){
+    Incident existingIncident = incidentService.getIncidentById(id);
+
+    Status revockedTicket = new Status(5, "Retirer");
+    existingIncident.setStatus(revockedTicket);
+
+    User assigne = existingIncident.getAssigne();
+
+    
+    Notification newNotification = new Notification();
+    newNotification.setDate(LocalDate.now());
+    newNotification.setTime(LocalTime.now());
+    newNotification.setText("A ticket has been revocked from you because you passed the time.");
+    newNotification.setAssigne(assigne);
+
+    notificationService.saveNotification(newNotification);
+
+    Incident updatedIncident = incidentService.updateIncident(existingIncident);
+    return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
+
+  }
+  
+
   
 }

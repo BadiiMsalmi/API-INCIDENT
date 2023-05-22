@@ -31,4 +31,5 @@ public interface IncidentRepository extends JpaRepository<Incident, Integer> {
     int countByStatus(Status Status);
 
     List<Incident> findByStatus_Label(String label);
+
 }
