@@ -267,10 +267,9 @@ public class IncidentController {
       newNotification1.setDeclarant(existingIncident.getDeclarant());
       notificationService.saveNotification(newNotification1);
 
-    }if (incident.getTimeLimit() != null) {
-      existingIncident.setTimeLimit(incident.getTimeLimit());
+    }if (incident.getClosureDate() != null) {
+      existingIncident.setClosureDate(incident.getClosureDate());
     }
-
     Incident updatedIncident = incidentService.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
   }
@@ -495,10 +494,12 @@ public class IncidentController {
     return ResponseEntity.ok(incidents);
   }
 
-  @PostMapping("/revockeTicket")
-  public ResponseEntity<Incident> setTicketToRevocked(@RequestParam("id") int id){
+  @PutMapping("/revockeTicket/{id}")
+  public ResponseEntity<Incident> setTicketToRevocked(@PathVariable("id") int id){
+    System.out.print(id+"*********************************************************************");
     Incident existingIncident = incidentService.getIncidentById(id);
 
+    System.out.print("***************************************************************");
     Status revockedTicket = new Status(5, "Retirer");
     existingIncident.setStatus(revockedTicket);
 
@@ -512,12 +513,39 @@ public class IncidentController {
     newNotification.setAssigne(assigne);
 
     notificationService.saveNotification(newNotification);
-
     Incident updatedIncident = incidentService.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
 
   }
-  
+  @GetMapping("/checkExpiredTickets")
+public void checkExpiredTickets() {
+    List<Incident> tickets = incidentService.findAll(); // Retrieve all tickets
+
+    LocalDate currentDate = LocalDate.now(); // Get the current date
+
+    for (Incident ticket : tickets) {
+        LocalDate closureDate = ticket.getClosureDate(); // Get the closure date of the ticket
+
+        if (closureDate != null && closureDate.isBefore(currentDate) && ticket.getStatus().getLabel().equals("EnCour")) {
+            Status revokedStatus = new Status(5, "Retirer");
+            ticket.setStatus(revokedStatus);
+            incidentService.updateIncident(ticket);
+
+            User assigne = ticket.getAssigne();
+
+    
+    Notification newNotification = new Notification();
+    newNotification.setDate(LocalDate.now());
+    newNotification.setTime(LocalTime.now());
+    newNotification.setText("A ticket has been revocked from you because you passed the time.");
+    newNotification.setAssigne(assigne);
+
+    notificationService.saveNotification(newNotification);
+
+            System.out.println("Ticket with ID " + ticket.getId() + " has been revoked.");
+        }
+    }
+}
 
   
 }

@@ -29,6 +29,9 @@ public class Incident {
   @Column(name = "CreationDate")
   private LocalDate creationdate; // badelt hedhi mn string el localdate ken saret mochkla rajaaa3ha 
 
+  @Column(name = "closure_date")
+  private LocalDate closureDate;
+
   @ManyToOne
   @JoinColumn(name = "status_id")
   private Status status;
@@ -45,9 +48,4 @@ public class Incident {
   @JoinColumn(name = "image_id")
   private ImageModel image;
 
-  @Column(name = "closure_date")
-  private LocalDate closureDate;
-
-  @Column(name = "time_limit")
-  private Integer timeLimit;
 }
