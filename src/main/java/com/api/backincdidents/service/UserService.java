@@ -1,6 +1,7 @@
 package com.api.backincdidents.service;
 
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.IncidentRepository;
 import com.api.backincdidents.repository.UserRepository;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepo;
+  
+  @Autowired
+  private IncidentRepository incidentRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -56,5 +60,10 @@ public class UserService {
     userRepo.save(user);
   }
 
-  
+  public Integer getOpenTicketsCount(int id){
+    String label = "EnCour";
+    return incidentRepository.countByAssigne_IdAndStatus_Label(id, label);
+  }
+
+
 }

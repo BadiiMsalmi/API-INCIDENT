@@ -29,17 +29,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   @Autowired
-  private UserService service;
+  private UserService userService;
 
 
 
   @Autowired
-  private UserRepository repo;
+  private UserRepository userRepository;
 
   
   @GetMapping("/users")
   public List<User> getUsers() {
-    List<User> user = service.getAllUsers();
+    List<User> user = userService.getAllUsers();
     return user;
   }
 
@@ -47,7 +47,7 @@ public class UserController {
   @GetMapping("/admins")
   public List<User> getAdmins() {
     String role = "admin";
-    List<User> user = service.getAllAdmins(role);
+    List<User> user = userService.getAllAdmins(role);
     return user;
   }
 
@@ -55,7 +55,7 @@ public class UserController {
   @GetMapping("/delarant")
   public List<User> getDeclarants() {
     String role = "declarant";
-    List<User> user = service.getAllDeclarant(role);
+    List<User> user = userService.getAllDeclarant(role);
     return user;
   }
 
@@ -64,7 +64,7 @@ public class UserController {
   @GetMapping("/searchByAdmin")
   public List<User> searchByAdmin(@RequestParam String firstName) {
     String role = "Assigned";
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
+    List<User> user = userRepository.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
     System.out.println(firstName+"**************"+role);
     return user;
   }
@@ -73,14 +73,14 @@ public class UserController {
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@RequestParam String firstName) {
     String role = "Declarant";
-    List<User> user = repo.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
+    List<User> user = userRepository.findByFirstnameLikeAndRoleLike('%' + firstName + '%', role);
     return user;
   }
 
   
   @GetMapping("/user/{id}")
   public ResponseEntity<Object> getUserById(@PathVariable int id) {
-    User user = service.getUserById(id);
+    User user = userService.getUserById(id);
     if(user == null){
       String errorMessage = "No such user";
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
@@ -92,7 +92,7 @@ public class UserController {
   @DeleteMapping("/user/{id}")
   public String deleteUser(@PathVariable int id, HttpServletResponse response) {
     try {
-      service.deleteUser(id);
+      userService.deleteUser(id);
       return "User removed.";
     } catch (Exception exc) {
       throw new ResponseStatusException(
@@ -103,13 +103,17 @@ public class UserController {
 
   @GetMapping("/getUserByEmail")
   public User getUserByEmail(@RequestParam String email){
-    return service.getUserByEmailIgnoreCase(email);
+    return userService.getUserByEmailIgnoreCase(email);
   }
   
   
-
-  
-  
-
-
+  @GetMapping("/getUserOpenTicket/{id}")
+  public ResponseEntity<Object> getUserOpenTicketCount(@PathVariable int id){
+    Integer count = userService.getOpenTicketsCount(id);
+    if (count == null) {
+      String errorMessage = "Error finding ticket count";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    return ResponseEntity.ok(count);
+  }
 }

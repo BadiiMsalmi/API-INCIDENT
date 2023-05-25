@@ -37,6 +37,8 @@ public class SecurityConfig {
             .authorizeHttpRequests()
             .requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**"))
                 .permitAll()
+            .requestMatchers(new AntPathRequestMatcher("/api/v1/affiliate/getallaffiliates")) // New endpoint
+                .permitAll()
             .anyRequest()
                 .authenticated()
             .and()

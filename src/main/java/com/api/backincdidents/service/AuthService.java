@@ -56,6 +56,7 @@ public class AuthService {
                                 .email(request.getEmail())
                                 .password(passwordEncoder.encode(request.getPassword()))
                                 .role(request.getRole())
+                                .affiliate(request.getAffiliate())
                                 .build();
                 var savedUser = repository.save(user);
                 ConfirmationToken confirmationToken = new ConfirmationToken(user);

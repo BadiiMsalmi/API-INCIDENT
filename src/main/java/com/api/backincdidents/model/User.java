@@ -42,6 +42,8 @@ public class User implements UserDetails{
   @NotEmpty
   private String lastname;
 
+  @NotNull
+  @NotEmpty
   private String role;
 
   @NotNull
@@ -52,10 +54,16 @@ public class User implements UserDetails{
   @NotEmpty
   private String password;
 
+  @ManyToOne
+  @JoinColumn(name = "affiliate_id")
+  private Affiliate affiliate;
+
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 
   private boolean isEnabled;
+
+  private Integer openTickets;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -106,6 +114,7 @@ public class User implements UserDetails{
         jsonGenerator.writeStringField("role", user.getRole());
         jsonGenerator.writeStringField("email", user.getEmail());
         jsonGenerator.writeBooleanField("isEnabled", user.isEnabled());
+        // jsonGenerator.writeBooleanField("affilliate", user.getAffiliate());
         jsonGenerator.writeEndObject();
     }
 }

@@ -10,8 +10,5 @@ public class BackIncdidentsApplication {
 		SpringApplication.run(BackIncdidentsApplication.class, args);
 	}
 
-	
-
-	
 }
 
