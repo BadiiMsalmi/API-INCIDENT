@@ -62,8 +62,18 @@ public class UserService {
 
   public Integer getOpenTicketsCount(int id){
     String label = "EnCour";
+    System.out.print(incidentRepository.countByAssigne_IdAndStatus_Label(id, label)+"********kkkkkkkk*************************");
     return incidentRepository.countByAssigne_IdAndStatus_Label(id, label);
   }
 
+  public User saveUser(User user){
+    return userRepo.save(user);
+  }
 
+
+  public void updateUserOpenTickets(int userId, int openTickets) {
+    User user = userRepo.findById(userId);
+    user.setOpenTickets(openTickets);
+    userRepo.save(user);
+  }
 }

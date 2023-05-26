@@ -252,27 +252,40 @@ public class IncidentController {
     }
     if (incident.getAssigne() != null) {
       existingIncident.setAssigne(incident.getAssigne());
-
+    
       Notification newNotification = new Notification();
       newNotification.setDate(LocalDate.now());
       newNotification.setTime(LocalTime.now());
       newNotification.setText("A new ticket has been assigned to you.");
       newNotification.setAssigne(incident.getAssigne());
       notificationService.saveNotification(newNotification);
-
+    
       Notification newNotification1 = new Notification();
       newNotification1.setDate(LocalDate.now());
       newNotification1.setTime(LocalTime.now());
       newNotification1.setText("Your ticket has been updated.");
       newNotification1.setDeclarant(existingIncident.getDeclarant());
       notificationService.saveNotification(newNotification1);
+    
+      Integer openTicketCount = getUserOpenTicketCount(existingIncident.getAssigne().getId());
+      existingIncident.getAssigne().setOpenTickets(openTicketCount);
+      userService.updateUserOpenTickets(existingIncident.getAssigne().getId(), openTicketCount);
 
+    System.out.println(openTicketCount + "************kkkk********");
+    
     }if (incident.getClosureDate() != null) {
       existingIncident.setClosureDate(incident.getClosureDate());
     }
     Incident updatedIncident = incidentService.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
   }
+
+
+  public Integer getUserOpenTicketCount( int id){
+    Integer count = userService.getOpenTicketsCount(id);
+    return count;
+  }
+
 
   @GetMapping("/incidentsByUser")
   public ResponseEntity<Object> getIncidentsForUser(@RequestParam Map<String, String> requestBody) {

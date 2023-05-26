@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "user")
 public class User implements UserDetails{
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
@@ -63,6 +64,7 @@ public class User implements UserDetails{
 
   private boolean isEnabled;
 
+  @Column(name = "open_tickets")
   private Integer openTickets;
 
   @Override
@@ -104,6 +106,14 @@ public class User implements UserDetails{
     return null;
   }
 
+  public Integer getOpenTickets() {
+    return openTickets != null ? openTickets : 0;
+  }
+
+  public void setOpenTickets(Integer openTickets) {
+    this.openTickets = openTickets != null ? openTickets : 0;
+}
+
   public static class UserSerializer extends JsonSerializer<User> {
     @Override
     public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -114,7 +124,8 @@ public class User implements UserDetails{
         jsonGenerator.writeStringField("role", user.getRole());
         jsonGenerator.writeStringField("email", user.getEmail());
         jsonGenerator.writeBooleanField("isEnabled", user.isEnabled());
-        // jsonGenerator.writeBooleanField("affilliate", user.getAffiliate());
+        jsonGenerator.writeNumberField("openTickets", user.getOpenTickets());   
+        jsonGenerator.writeObjectField("affiliate", user.getAffiliate());
         jsonGenerator.writeEndObject();
     }
 }
