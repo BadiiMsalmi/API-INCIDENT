@@ -270,8 +270,6 @@ public class IncidentController {
       Integer openTicketCount = getUserOpenTicketCount(existingIncident.getAssigne().getId());
       existingIncident.getAssigne().setOpenTickets(openTicketCount);
       userService.updateUserOpenTickets(existingIncident.getAssigne().getId(), openTicketCount);
-
-    System.out.println(openTicketCount + "************kkkk********");
     
     }if (incident.getClosureDate() != null) {
       existingIncident.setClosureDate(incident.getClosureDate());
@@ -509,10 +507,7 @@ public class IncidentController {
 
   @PutMapping("/revockeTicket/{id}")
   public ResponseEntity<Incident> setTicketToRevocked(@PathVariable("id") int id){
-    System.out.print(id+"*********************************************************************");
     Incident existingIncident = incidentService.getIncidentById(id);
-
-    System.out.print("***************************************************************");
     Status revockedTicket = new Status(5, "Retirer");
     existingIncident.setStatus(revockedTicket);
 

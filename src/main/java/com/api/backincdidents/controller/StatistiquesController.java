@@ -36,7 +36,7 @@ public class StatistiquesController {
     @Autowired
     private UserService userService;
 
-    // trajaa3lek les ticket eli ma7loulin ma tsakrouch
+    // trajaa3lek les ticket eli ma7loulin ma tsakrouch // TABLEAU
     @GetMapping("/openincidents")
     public ResponseEntity<Object> getOpenIncidents() {
         List<Incident> openIncidents = statsService.getOpenIncidents();
@@ -47,7 +47,7 @@ public class StatistiquesController {
         return ResponseEntity.ok(openIncidents);
     }
 
-    // trajaalek les assigned w 9adech men ticket aandhom
+    // trajaalek les assigned w 9adech men ticket aandhom // BAR chart
     @GetMapping("/assignedStats")
     public List<UserWithTicketCount> getAssignedUsersWithIncidentCount() {
         return statsService.getAssignedUsersWithIncidentCount();
@@ -90,6 +90,7 @@ public class StatistiquesController {
     }
 
     // Calculate average resolution time in days lel incidents eli tsakrou sayee
+
     @GetMapping("/averageResolutionTime")
     public ResponseEntity<Double> calculateAverageResolutionTime() {
         double averageResolutionTime = statsService.calculateAverageResolutionTime();

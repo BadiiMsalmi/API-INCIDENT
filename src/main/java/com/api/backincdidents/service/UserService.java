@@ -76,4 +76,8 @@ public class UserService {
     user.setOpenTickets(openTickets);
     userRepo.save(user);
   }
+
+  public User updateUser(User user) {
+    return userRepo.save(user);
+  }
 }

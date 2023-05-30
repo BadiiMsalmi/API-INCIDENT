@@ -38,4 +38,6 @@ public class RegisterRequest {
     private String role;
 
     private Affiliate affiliate;
+
+    private ImageModel image;
 }

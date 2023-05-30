@@ -67,6 +67,10 @@ public class User implements UserDetails{
   @Column(name = "open_tickets")
   private Integer openTickets;
 
+  @ManyToOne
+  @JoinColumn(name = "image_id")
+  private ImageModel image;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority(role));  
@@ -114,6 +118,8 @@ public class User implements UserDetails{
     this.openTickets = openTickets != null ? openTickets : 0;
 }
 
+
+
   public static class UserSerializer extends JsonSerializer<User> {
     @Override
     public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -126,6 +132,7 @@ public class User implements UserDetails{
         jsonGenerator.writeBooleanField("isEnabled", user.isEnabled());
         jsonGenerator.writeNumberField("openTickets", user.getOpenTickets());   
         jsonGenerator.writeObjectField("affiliate", user.getAffiliate());
+        jsonGenerator.writeObjectField("image", user.getImage());
         jsonGenerator.writeEndObject();
     }
 }
