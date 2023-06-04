@@ -154,12 +154,15 @@ public class UserController {
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
-  @PostMapping("/upload")
-  public Optional<ImageModel> uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+  @PostMapping("/upload/{id}")
+  public Optional<ImageModel> uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable("id") int userId) throws IOException {
     System.out.println("Original Image Byte Size -  " + file.getBytes().length);
     ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
         compressBytes(file.getBytes()));
     this.imageRepository.save(img);
+    User user = this.userService.getUserById(userId);
+    user.setImage(img);
+    this.userRepository.save(user);
     return this.imageRepository.findById(img.getId());
   }
 

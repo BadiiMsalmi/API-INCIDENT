@@ -1,5 +1,6 @@
 package com.api.backincdidents.repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
@@ -26,7 +27,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Integer> {
 
     int countByAssigne(User user);
 
-    List<Incident> findByStatus_LabelAndCreationdateBetween(String status, String  startDate, String  endDate);
+    List<Incident> findByStatus_LabelAndCreationdateBetween(String status, LocalDate  startDate, LocalDate  endDate);
 
     int countByStatus(Status Status);
 

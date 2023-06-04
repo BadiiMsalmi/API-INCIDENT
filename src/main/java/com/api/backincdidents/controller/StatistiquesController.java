@@ -1,7 +1,6 @@
 package com.api.backincdidents.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,19 +53,16 @@ public class StatistiquesController {
     }
 
     // taa3tiik pourcentage mtaa el incidents eli tsakrou fel periode eli theb
-    // aaliha
+    // aaliha (ROW WA7DHA FIH ZOUZ inputt mtaa date)
     @PostMapping("/closureRate")
     public ResponseEntity<Double> calculateClosureRate(
-            @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
-            @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate) {
+        @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+        @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedStartDate = dateFormat.format(startDate);
-        String formattedEndDate = dateFormat.format(endDate);
+    double closureRate = statsService.calculateClosureRate(startDate, endDate);
+    return ResponseEntity.ok(closureRate);
+}
 
-        double closureRate = statsService.calculateClosureRate(formattedStartDate, formattedEndDate);
-        return ResponseEntity.ok(closureRate);
-    }
 
     // trajaalek kol status w 9adeh mn incident fel status adhika bel pourcentege
     @GetMapping("/incidentsByStatusRate")

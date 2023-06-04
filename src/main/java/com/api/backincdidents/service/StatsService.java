@@ -50,19 +50,20 @@ public class StatsService {
         return result;
     }
 
-    public double calculateClosureRate(String startDate, String endDate) {
+    public double calculateClosureRate(LocalDate startDate, LocalDate endDate) {
         String closedStatus = "Terminer";
         long totalIncidents = incidentRepository.count();
         long closedIncidents = incidentRepository
                 .findByStatus_LabelAndCreationdateBetween(closedStatus, startDate, endDate)
                 .size();
-
+    
         if (totalIncidents == 0) {
             return 0.0; // Handle the case when there are no incidents
         }
-
+    
         return (closedIncidents / (double) totalIncidents) * 100;
     }
+    
 
     public List<StatusRateDTO> getIncidentsByStatusRate() {
         List<Status> statuses = statusRepository.findAll();
