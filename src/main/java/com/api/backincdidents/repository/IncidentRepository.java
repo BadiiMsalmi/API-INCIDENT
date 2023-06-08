@@ -25,14 +25,23 @@ public interface IncidentRepository extends JpaRepository<Incident, Integer> {
 
     List<Incident> findByStatus_LabelOrStatus_Label(String label1, String label2);
 
+    List<Incident> findByStatus_LabelOrStatus_LabelAndAssigne_Id(String label1, String label2,int id);
+
     int countByAssigne(User user);
 
     List<Incident> findByStatus_LabelAndCreationdateBetween(String status, LocalDate  startDate, LocalDate  endDate);
 
+    List<Incident> findByStatus_LabelAndCreationdateBetweenAndAssigne_Id(String status, LocalDate  startDate, LocalDate  endDate,int id);
+
     int countByStatus(Status Status);
+
+    int countByAssigne_IdAndStatus(int id,Status Status);
+
+    List<Incident> findByStatus_LabelAndAssigne_Id(String label,int id);
 
     List<Incident> findByStatus_Label(String label);
 
     Integer countByAssigne_IdAndStatus_Label(int id,String status);
 
+    int countByAssigne_Id(int id);
 }

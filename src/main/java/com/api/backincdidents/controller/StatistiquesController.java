@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,7 @@ public class StatistiquesController {
     @Autowired
     private UserService userService;
 
+    /* ***********ADMIN**************** */
     // trajaa3lek les ticket eli ma7loulin ma tsakrouch // TABLEAU
     @GetMapping("/openincidents")
     public ResponseEntity<Object> getOpenIncidents() {
@@ -61,7 +63,7 @@ public class StatistiquesController {
 
     double closureRate = statsService.calculateClosureRate(startDate, endDate);
     return ResponseEntity.ok(closureRate);
-}
+    }
 
 
     // trajaalek kol status w 9adeh mn incident fel status adhika bel pourcentege
@@ -86,10 +88,47 @@ public class StatistiquesController {
     }
 
     // Calculate average resolution time in days lel incidents eli tsakrou sayee
-
     @GetMapping("/averageResolutionTime")
     public ResponseEntity<Double> calculateAverageResolutionTime() {
         double averageResolutionTime = statsService.calculateAverageResolutionTime();
         return ResponseEntity.ok(averageResolutionTime);
     }
+
+    /* ***********ADMIN********END******** */
+
+    /* ***********ASSIGNED**************** */
+     // trajaalek kol status w 9adeh mn incident fel status adhika bel pourcentege
+     @GetMapping("/incidentsByStatusRateAssigned/{id}")
+     public ResponseEntity<List<StatusRateDTO>> getIncidentsByStatusRateAssigned(@PathVariable("id") int id) {
+         List<StatusRateDTO> incidentsByStatusRate = statsService.getIncidentsByStatusRateAssigned(id);
+         return ResponseEntity.ok(incidentsByStatusRate);
+     }
+
+     // trajaalek 9adeh el average age mtaa el incidetents el ma7loulin mazelou matsakrouch bel date
+    @GetMapping("/averageIncidentAgeAssigned/{id}")
+    public ResponseEntity<Double> getAverageIncidentAgeAssigned(@PathVariable("id") int id) {
+        double averageAge = statsService.calculateAverageOpenIncidentAgeAssigned(id);
+        return ResponseEntity.ok(averageAge);
+    }
+
+    // Calculate average resolution time in days lel incidents eli tsakrou sayee
+    @GetMapping("/averageResolutionTimeAssigned/{id}")
+    public ResponseEntity<Double> calculateAverageResolutionTimeAssigned(@PathVariable("id") int id) {
+        double averageResolutionTime = statsService.calculateAverageResolutionTimeAssigned(id);
+        return ResponseEntity.ok(averageResolutionTime);
+    }
+
+    // taa3tiik pourcentage mtaa el incidents eli tsakrou fel periode eli theb
+    // aaliha (ROW WA7DHA FIH ZOUZ inputt mtaa date)
+    @PostMapping("/closureRateAssigned/{id}")
+    public ResponseEntity<Double> calculateClosureRateAssigned(
+        @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+        @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
+        @PathVariable("id") int id) {
+
+    double closureRate = statsService.calculateClosureRateAssigned(startDate, endDate,id);
+    return ResponseEntity.ok(closureRate);
+    }
+
+      /* ***********ASSIGNED*****END********** */
 }

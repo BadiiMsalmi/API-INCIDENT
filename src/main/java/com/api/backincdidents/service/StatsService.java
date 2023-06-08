@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +62,20 @@ public class StatsService {
     
         return (closedIncidents / (double) totalIncidents) * 100;
     }
+
+    public double calculateClosureRateAssigned(LocalDate startDate, LocalDate endDate,int id) {
+        String closedStatus = "Terminer";
+        long totalIncidents = incidentRepository.countByAssigne_Id(id);
+        long closedIncidents = incidentRepository
+                .findByStatus_LabelAndCreationdateBetweenAndAssigne_Id(closedStatus, startDate, endDate,id)
+                .size();
     
+        if (totalIncidents == 0) {
+            return 0.0; // Handle the case when there are no incidents
+        }
+    
+        return (closedIncidents / (double) totalIncidents) * 100;
+    }
 
     public List<StatusRateDTO> getIncidentsByStatusRate() {
         List<Status> statuses = statusRepository.findAll();
@@ -85,10 +97,50 @@ public class StatsService {
         return statusRates;
     }
 
+    public List<StatusRateDTO> getIncidentsByStatusRateAssigned(int id) {
+        List<Status> statuses = statusRepository.findAll();
+        List<StatusRateDTO> statusRates = new ArrayList<>();
+
+        for (Status status : statuses) {
+            long totalIncidents = incidentRepository.countByAssigne_IdAndStatus(id,status);
+            long totalAllIncidents = incidentRepository.countByAssigne_Id(id);
+
+            double rate = (totalIncidents / (double) totalAllIncidents) * 100;
+
+            StatusRateDTO statusRate = new StatusRateDTO();
+            statusRate.setStatus(status.getLabel());
+            statusRate.setRate(rate);
+
+            statusRates.add(statusRate);
+        }
+
+        return statusRates;
+    }
+
     public double calculateAverageOpenIncidentAge() {
         String status1 = "EnCour";
         String status2 = "Declancher";
         List<Incident> openIncidents = incidentRepository.findByStatus_LabelOrStatus_Label(status1, status2);
+
+        if (openIncidents.isEmpty()) {
+            return 0.0; // Handle the case when there are no open incidents
+        }
+
+        long totalAgeInDays = 0;
+        for (Incident incident : openIncidents) {
+            long incidentAgeInDays = ChronoUnit.DAYS.between(incident.getCreationdate(), LocalDate.now());
+            totalAgeInDays += incidentAgeInDays;
+        }
+
+        double averageAgeInDays = totalAgeInDays / (double) openIncidents.size();
+
+        return averageAgeInDays;
+    }
+
+    public double calculateAverageOpenIncidentAgeAssigned(int id) {
+        String status1 = "EnCour";
+        String status2 = "Declancher";
+        List<Incident> openIncidents = incidentRepository.findByStatus_LabelOrStatus_LabelAndAssigne_Id(status1, status2,id);
 
         if (openIncidents.isEmpty()) {
             return 0.0; // Handle the case when there are no open incidents
@@ -128,6 +180,29 @@ public class StatsService {
     
         return averageResolutionTimeInDays;
     }
+
+    public double calculateAverageResolutionTimeAssigned(int id) {
+        String resolvedStatus = "Terminer";
+        List<Incident> resolvedIncidents = incidentRepository.findByStatus_LabelAndAssigne_Id(resolvedStatus,id);
     
+        if (resolvedIncidents.isEmpty()) {
+            return 0.0; // Handle the case when there are no resolved incidents
+        }
     
+        long totalResolutionTimeInMillis = 0;
+        for (Incident incident : resolvedIncidents) {
+            LocalDate resolutionDateTime = incident.getClosureDate();
+            LocalDate creationDateTime = incident.getCreationdate();
+            LocalDate currentDateTime = LocalDate.now();
+    
+            LocalDate resolvedDateTime = resolutionDateTime != null ? resolutionDateTime : currentDateTime;
+            Duration resolutionTime = Duration.between(creationDateTime.atStartOfDay(), resolvedDateTime.atStartOfDay());
+            totalResolutionTimeInMillis += resolutionTime.toDays() * 24 * 60 * 60 * 1000; // Convert to milliseconds
+        }
+    
+        double averageResolutionTimeInDays = totalResolutionTimeInMillis / (resolvedIncidents.size() * 24 * 60 * 60 * 1000.0); // Convert to days
+    
+        return averageResolutionTimeInDays;
+    }
+
 }
