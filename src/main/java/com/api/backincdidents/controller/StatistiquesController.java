@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.backincdidents.Dto.AffiliateCountDTO;
 import com.api.backincdidents.Dto.StatusRateDTO;
 import com.api.backincdidents.Dto.UserWithTicketCount;
 import com.api.backincdidents.model.Incident;
@@ -94,6 +95,18 @@ public class StatistiquesController {
         return ResponseEntity.ok(averageResolutionTime);
     }
 
+    @GetMapping("/incidentsByAffiliteCount")
+     public ResponseEntity<List<AffiliateCountDTO>> getIncidentsByAffiliteCount() {
+         List<AffiliateCountDTO> incidentsByAffiliateCount = statsService.getIncidentsByAffiliateCount();
+         return ResponseEntity.ok(incidentsByAffiliateCount);
+     }
+
+     @GetMapping("/getNumberOfSolvedTickets")
+    public ResponseEntity<Double> getNumberOfSolvedTickets() {
+        double averageResolutionTime = statsService.getNumberOfSolvedTickets();
+        return ResponseEntity.ok(averageResolutionTime);
+    }
+
     /* ***********ADMIN********END******** */
 
     /* ***********ASSIGNED**************** */
@@ -129,6 +142,14 @@ public class StatistiquesController {
     double closureRate = statsService.calculateClosureRateAssigned(startDate, endDate,id);
     return ResponseEntity.ok(closureRate);
     }
+
+    @GetMapping("/getNumberOfSolvedTickets/{id}")
+    public ResponseEntity<Double> getNumberOfSolvedTicketsAssigned(@PathVariable("id") int id) {
+        double averageResolutionTime = statsService.getNumberOfSolvedTicketsAssigned(id);
+        return ResponseEntity.ok(averageResolutionTime);
+    }
+
+    
 
       /* ***********ASSIGNED*****END********** */
 }

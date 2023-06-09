@@ -1,5 +1,8 @@
 package com.api.backincdidents.controller;
 
+import com.api.backincdidents.Dto.FilterDto;
+import com.api.backincdidents.Dto.WhereDto;
+import com.api.backincdidents.model.Affiliate;
 import com.api.backincdidents.model.ImageModel;
 import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.ImageRepository;
@@ -8,10 +11,19 @@ import com.api.backincdidents.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
@@ -211,5 +223,42 @@ public class UserController {
     }
     return outputStream.toByteArray();
   }
+
+  @PersistenceContext
+  private EntityManager em;
+    
+  @PostMapping("/search")
+public ResponseEntity<Object> search(@RequestBody FilterDto filter) {
+    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+    CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+    Root<User> root = criteriaQuery.from(User.class);
+    List<Predicate> predicates = new ArrayList<>();
+
+    for (WhereDto where : filter.getWhere()) {
+        String field = where.getField();
+        List<String> modalities = where.getModalities();
+
+        if (field.equals("role")) {
+            predicates.add(criteriaBuilder.equal(root.get("role"), modalities.get(0)));
+        } else if (field.equals("affiliate")) {
+          Join<User, Affiliate> affiliateJoin = root.join("affiliate");
+          predicates.add(criteriaBuilder.equal(affiliateJoin.get("label"), modalities.get(0)));
+        } else if (field.equals("firstname")) {
+            predicates.add(criteriaBuilder.equal(root.get("firstname"), modalities.get(0)));
+        }
+        // Add more conditions for additional fields as needed
+    }
+
+    criteriaQuery.select(root).where(predicates.toArray(new Predicate[0]));
+    TypedQuery<User> query = em.createQuery(criteriaQuery);
+    List<User> users = query.getResultList();
+
+    if (users.isEmpty()) {
+        String errorMessage = "No users found matching the search criteria";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    return ResponseEntity.ok(users);
+}
 
 }

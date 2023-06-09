@@ -8,11 +8,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.api.backincdidents.Dto.AffiliateCountDTO;
 import com.api.backincdidents.Dto.StatusRateDTO;
 import com.api.backincdidents.Dto.UserWithTicketCount;
+import com.api.backincdidents.model.Affiliate;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.AffiliateRepository;
 import com.api.backincdidents.repository.IncidentRepository;
 import com.api.backincdidents.repository.StatusRepository;
 import com.api.backincdidents.repository.UserRepository;
@@ -29,6 +32,8 @@ public class StatsService {
     @Autowired
     private StatusRepository statusRepository;
 
+    @Autowired
+    private AffiliateRepository affiliateRepository;
     public List<Incident> getOpenIncidents() {
         String status1 = "EnCour";
         String status2 = "Declancher";
@@ -117,6 +122,24 @@ public class StatsService {
         return statusRates;
     }
 
+    public List<AffiliateCountDTO> getIncidentsByAffiliateCount() {
+        List<Affiliate> affiliates = affiliateRepository.findAll();
+        List<AffiliateCountDTO> affiliateCounts = new ArrayList<>();
+
+        for (Affiliate affiliate : affiliates) {
+            long totalIncidents = incidentRepository.countByDeclarant_Affiliate(affiliate);
+
+
+            AffiliateCountDTO affiliateCount = new AffiliateCountDTO();
+            affiliateCount.setAffiliate(affiliate.getLabel());
+            affiliateCount.setCount(totalIncidents);
+
+            affiliateCounts.add(affiliateCount);
+        }
+
+        return affiliateCounts;
+    }
+    
     public double calculateAverageOpenIncidentAge() {
         String status1 = "EnCour";
         String status2 = "Declancher";
@@ -203,6 +226,18 @@ public class StatsService {
         double averageResolutionTimeInDays = totalResolutionTimeInMillis / (resolvedIncidents.size() * 24 * 60 * 60 * 1000.0); // Convert to days
     
         return averageResolutionTimeInDays;
+    }
+
+    public Integer getNumberOfSolvedTicketsAssigned(int id){
+        String status = "Terminer";
+        return this.incidentRepository.countByAssigne_IdAndStatus_Label(id,status);
+
+    }
+
+    public Integer getNumberOfSolvedTickets(){
+        String status = "Terminer";
+        return this.incidentRepository.countByStatus_Label(status);
+
     }
 
 }

@@ -2,6 +2,8 @@ package com.api.backincdidents.repository;
 
 import java.time.LocalDate;
 import java.util.Date;
+
+import com.api.backincdidents.model.Affiliate;
 import com.api.backincdidents.model.Incident;
 import com.api.backincdidents.model.Status;
 import com.api.backincdidents.model.User;
@@ -44,4 +46,8 @@ public interface IncidentRepository extends JpaRepository<Incident, Integer> {
     Integer countByAssigne_IdAndStatus_Label(int id,String status);
 
     int countByAssigne_Id(int id);
+
+    int countByDeclarant_Affiliate(Affiliate a);
+
+    int countByStatus_Label(String status);
 }
