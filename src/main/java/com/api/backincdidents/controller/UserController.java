@@ -166,8 +166,20 @@ public class UserController {
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
+  
+
+
+  @PostMapping("/uploadd")
+  public Optional<ImageModel> uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+    System.out.println("Original Image Byte Size -  " + file.getBytes().length);
+    ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
+        compressBytes(file.getBytes()));
+    this.imageRepository.save(img);
+    return this.imageRepository.findById(img.getId());
+  }
+
   @PostMapping("/upload/{id}")
-  public Optional<ImageModel> uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable("id") int userId) throws IOException {
+  public Optional<ImageModel> updateImage(@RequestParam("imageFile") MultipartFile file,@PathVariable("id") int userId) throws IOException {
     System.out.println("Original Image Byte Size -  " + file.getBytes().length);
     ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
         compressBytes(file.getBytes()));

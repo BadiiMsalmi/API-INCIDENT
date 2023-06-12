@@ -2,6 +2,7 @@ package com.api.backincdidents.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.api.backincdidents.Dto.AccountResponse;
 import com.api.backincdidents.Dto.NewPassword;
 import com.api.backincdidents.Dto.ResetPassword;
+import com.api.backincdidents.model.Affiliate;
 import com.api.backincdidents.model.AuthenticationRequest;
 import com.api.backincdidents.model.AuthenticationResponse;
 import com.api.backincdidents.model.ConfirmationToken;
@@ -26,6 +28,7 @@ import com.api.backincdidents.model.User;
 import com.api.backincdidents.repository.RoleRepository;
 import com.api.backincdidents.repository.StatusRepository;
 import com.api.backincdidents.repository.UserRepository;
+import com.api.backincdidents.service.AffiliateService;
 import com.api.backincdidents.service.AuthService;
 import com.api.backincdidents.service.EmailService;
 import com.api.backincdidents.service.UserService;
@@ -43,6 +46,7 @@ public class AuthController {
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final StatusRepository statusRepository;
+    private final AffiliateService affiliateService;
 
 
 
@@ -117,4 +121,16 @@ public class AuthController {
   public List<Status> getAllStatus(){
     return statusRepository.findAll();
   }
+
+  @GetMapping("/getallaffiliates")
+    public ResponseEntity<Object> getAllAffiliate(){
+        List<Affiliate> affiliates = affiliateService.getAllAffiliates();
+
+        if (affiliates.isEmpty()) {
+            String errorMessage = "No affilates found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+          }
+          
+          return ResponseEntity.ok(affiliates);
+    }
 }
