@@ -3,10 +3,13 @@ package com.api.backincdidents.controller;
 import com.api.backincdidents.Dto.FilterDto;
 import com.api.backincdidents.Dto.WhereDto;
 import com.api.backincdidents.model.Affiliate;
+import com.api.backincdidents.model.ConfirmationToken;
 import com.api.backincdidents.model.ImageModel;
 import com.api.backincdidents.model.User;
+import com.api.backincdidents.repository.ConfirmationTokenRepository;
 import com.api.backincdidents.repository.ImageRepository;
 import com.api.backincdidents.repository.UserRepository;
+import com.api.backincdidents.service.EmailService;
 import com.api.backincdidents.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ import java.util.zip.Inflater;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,30 +66,13 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
-  
-  @GetMapping("/users")
-  public List<User> getUsers() {
-    List<User> user = userService.getAllUsers();
-    return user;
-  }
+  @Autowired
+  private EmailService emailService;
 
+  @Autowired
+  private ConfirmationTokenRepository confirmationTokenRepository;
   
-  @GetMapping("/admins")
-  public List<User> getAdmins() {
-    String role = "admin";
-    List<User> user = userService.getAllAdmins(role);
-    return user;
-  }
 
-  
-  @GetMapping("/delarant")
-  public List<User> getDeclarants() {
-    String role = "declarant";
-    List<User> user = userService.getAllDeclarant(role);
-    return user;
-  }
-
-  // Autocomplete FOR ADMIN
   
   @GetMapping("/searchByAdmin")
   public List<User> searchByAdmin(@RequestParam String firstName) {
@@ -95,7 +82,7 @@ public class UserController {
     return user;
   }
 
-  // Autocomplete FOR normal USER
+  
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@RequestParam String firstName) {
     String role = "Declarant";
@@ -155,6 +142,17 @@ public class UserController {
     }
     if (user.getEmail() != null) {
       existingUser.setEmail(user.getEmail());
+      existingUser.setEnabled(false);
+
+      ConfirmationToken confirmationToken = new ConfirmationToken(user);
+                confirmationTokenRepository.save(confirmationToken);
+                
+      SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(user.getEmail());
+                mailMessage.setSubject("Verify e-mail!");
+                mailMessage.setFrom("3KxCLFjkmZ9bN7e@mail.com");
+                mailMessage.setText("Hello,"+existingUser.getFirstname()+"\nTo confirm your email, please click here : http://localhost:8080/api/v1/auth/confirm-account?token="+confirmationToken.getConfirmationToken());
+                emailService.sendEmail(mailMessage);
     }
     if (user.getFirstname() != null) {
       existingUser.setFirstname(user.getFirstname());

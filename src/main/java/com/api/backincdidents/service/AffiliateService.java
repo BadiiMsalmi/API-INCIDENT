@@ -23,6 +23,8 @@ public class AffiliateService {
         return affiliateRepository.save(affiliate);
     }
 
+    
+
     public void deleteAffiliate(int id){
         affiliateRepository.deleteById(id);
     }
@@ -30,5 +32,9 @@ public class AffiliateService {
     public Affiliate getAffiliateById(int id){
         return affiliateRepository.getReferenceById(id);
     }
+
+    public Affiliate updateAffiliate(Affiliate affiliate) {
+        return affiliateRepository.save(affiliate);
+      }
     
 }

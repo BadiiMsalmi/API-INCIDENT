@@ -34,6 +34,8 @@ public class Notification {
 
     private String text;
 
+    private int ticketId;
+
     @ManyToOne
     @JoinColumn(name = "declarant_id")
     private User declarant;

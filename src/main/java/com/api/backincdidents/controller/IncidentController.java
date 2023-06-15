@@ -232,6 +232,7 @@ public class IncidentController {
         newNotification.setTime(LocalTime.now());
         newNotification.setText("Your ticket has been updated.");
         newNotification.setDeclarant(existingIncident.getDeclarant());
+        newNotification.setTicketId(existingIncident.getId());
         notificationService.saveNotification(newNotification);
 
       } else if (incident.getStatus().getLabel().equals("Terminer")) {
@@ -241,6 +242,7 @@ public class IncidentController {
         newNotification.setTime(LocalTime.now());
         newNotification.setText("Your ticket has been fixed.");
         newNotification.setDeclarant(existingIncident.getDeclarant());
+        newNotification.setTicketId(existingIncident.getId());
         notificationService.saveNotification(newNotification);
 
         existingIncident.setClosureDate(LocalDate.now());
@@ -258,13 +260,15 @@ public class IncidentController {
       newNotification.setTime(LocalTime.now());
       newNotification.setText("A new ticket has been assigned to you.");
       newNotification.setAssigne(incident.getAssigne());
+      newNotification.setTicketId(existingIncident.getId());
       notificationService.saveNotification(newNotification);
     
       Notification newNotification1 = new Notification();
       newNotification1.setDate(LocalDate.now());
       newNotification1.setTime(LocalTime.now());
-      newNotification1.setText("Your ticket has been updated.");
+      newNotification1.setText("Your ticket is under work.");
       newNotification1.setDeclarant(existingIncident.getDeclarant());
+      newNotification.setTicketId(existingIncident.getId());
       notificationService.saveNotification(newNotification1);
     
       Integer openTicketCount = getUserOpenTicketCount(existingIncident.getAssigne().getId());
@@ -313,6 +317,7 @@ public class IncidentController {
     newNotification.setTime(LocalTime.now());
     newNotification.setText("A new ticket has been added.");
     newNotification.setAdmin(admin);
+    newNotification.setTicketId(newIncident.getId());
 
     notificationService.saveNotification(newNotification);
 
@@ -521,18 +526,20 @@ public class IncidentController {
     newNotification.setAssigne(assigne);
 
     notificationService.saveNotification(newNotification);
+    newNotification.setTicketId(existingIncident.getId());
     Incident updatedIncident = incidentService.updateIncident(existingIncident);
     return new ResponseEntity<>(updatedIncident, HttpStatus.OK);
 
   }
+
   @GetMapping("/checkExpiredTickets")
 public void checkExpiredTickets() {
-    List<Incident> tickets = incidentService.findAll(); // Retrieve all tickets
+    List<Incident> tickets = incidentService.findAll(); 
 
-    LocalDate currentDate = LocalDate.now(); // Get the current date
+    LocalDate currentDate = LocalDate.now(); 
 
     for (Incident ticket : tickets) {
-        LocalDate closureDate = ticket.getClosureDate(); // Get the closure date of the ticket
+        LocalDate closureDate = ticket.getClosureDate(); 
 
         if (closureDate != null && closureDate.isBefore(currentDate) && ticket.getStatus().getLabel().equals("EnCour")) {
             Status revokedStatus = new Status(5, "Retirer");
@@ -549,6 +556,7 @@ public void checkExpiredTickets() {
     newNotification.setAssigne(assigne);
 
     notificationService.saveNotification(newNotification);
+    newNotification.setTicketId(ticket.getId());
 
             System.out.println("Ticket with ID " + ticket.getId() + " has been revoked.");
         }
