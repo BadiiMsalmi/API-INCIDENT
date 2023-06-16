@@ -33,10 +33,7 @@ public class AffiliateController {
     public ResponseEntity<Object> getAffiliateById(@PathVariable("id") int id){
         Affiliate affiliate = affiliateService.getAffiliateById(id);
 
-        if (affiliate.getLabel().isEmpty()) {
-            String errorMessage = "No affilate found";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-          }
+        
           
           return ResponseEntity.ok(affiliate);
     }

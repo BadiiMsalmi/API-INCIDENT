@@ -82,7 +82,12 @@ public class UserController {
     return user;
   }
 
-  
+  @GetMapping("/users")
+  public List<User> getUsers() {
+    List<User> user = userService.getAllUsers();
+    return user;
+  }
+
   @GetMapping("/searchByUser")
   public List<User> searchByUser(@RequestParam String firstName) {
     String role = "Declarant";

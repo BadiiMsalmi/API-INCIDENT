@@ -30,7 +30,7 @@ public class AffiliateService {
     }
 
     public Affiliate getAffiliateById(int id){
-        return affiliateRepository.getReferenceById(id);
+        return affiliateRepository.findById(id);
     }
 
     public Affiliate updateAffiliate(Affiliate affiliate) {
